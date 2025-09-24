@@ -1,0 +1,23 @@
+{
+  "name": "Navi Kalam - Digital Learning App",
+  "short_name": "Navi Kalam",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#14B8A6",
+  "theme_color": "#14B8A6",
+  "description": "Your friendly learning companion",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+.font-baloo { font-family: 'Baloo 2', cursive; }
+.screen { display: none; }
+.screen.active { display: flex; flex-direction: column; }
+.fade-in { animation: fadeIn 0.4s ease-in-out; }
+.slide-up { animation: slideUp 0.5s ease-out; }
+.logo-pop-in { animation: popIn 1s ease-out forwards; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes popIn { 
+    0% { opacity: 0; transform: scale(0.5); }
+    60% { opacity: 1; transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Updated Active Nav Button Color */
+.nav-button.active { background-color: #f0fdfa; color: #0d9488; }
+.dark .nav-button.active { background-color: #134e4a; color: #2dd4bf; }
+
+.toggle-checkbox:checked { right: 0; border-color: #4ade80; }
+.toggle-checkbox:checked + .toggle-label { background-color: #4ade80; }
+.quiz-option { transition: all 0.2s; }
+
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+#side-menu { transition: transform 0.3s ease-in-out; }
+#menu-overlay { transition: opacity 0.3s ease-in-out; }
+
+.learning-map {
+    background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="p" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M0 50 Q 25 25, 50 50 T 100 50" stroke="%23ccfbf1" stroke-width="2" fill="none" /></pattern></defs><rect width="100%" height="100%" fill="url(%23p)"/></svg>');
+}
+.dark .learning-map {
+     background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="p" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M0 50 Q 25 25, 50 50 T 100 50" stroke="%23134e4a" stroke-width="2" fill="none" /></pattern></defs><rect width="100%" height="100%" fill="url(%23p)"/></svg>');
+}
+.chapter-path-item::after {
+    content: '';
+    position: absolute;
+    bottom: -2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 2.5rem;
+    background-color: #cbd5e1;
+}
+ .dark .chapter-path-item::after { background-color: #4b5563; }
+.chapter-path-item:last-child::after { display: none; }
+
+/* Guide Styles */
+#guide-overlay { z-index: 999; }
+.guide-highlight {
+    box-shadow: 0 0 0 9999px rgba(0,0,0,0.6);
+    z-index: 1000;
+    position: relative;
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease-in-out;
+}
+.guide-tooltip {
+    z-index: 1001;
+    position: absolute;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease-out;
+}
+.guide-tooltip.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Confetti Animation Styles */
+#confetti-container {
+    overflow: hidden;
+}
+.confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #0D9488; /* Default */
+    top: -20px; /* Start above screen */
+    opacity: 0;
+    animation: confetti-fall 4s linear forwards;
+}
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(110vh) rotate(720deg); /* Fall to bottom of viewport */
+        opacity: 0;
+    }
+}
+
+/* Whiteboard Toolbar Styles */
+.wb-tool.active-tool, .wb-size.active-size {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+.dark .wb-tool.active-tool, .dark .wb-size.active-size {
+    background-color: #134e4a;
+    color: #99f6e4;
+}
+.wb-color.active-color {
+    border-color: #0d9488;
+    transform: scale(1.1);
+}
+.new-avatar-option.ring-4 {
+    opacity: 1;
+}
+
+/* NEW: Padding for the fullscreen whiteboard canvas container */
+.fullscreen-whiteboard-padding {
+    padding-top: 4.5rem; /* Space for the header */
+    padding-bottom: 6rem; /* Space for the toolbar */
+}
+
+/* Improved Splash Screen Background */
+#splash-screen {
+    background-color: #14B8A6;
+    background-image: 
+        url('data:image/svg+xml;utf8,<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="spattern" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse" viewBox="0 0 100 100"><g fill="white" fill-opacity="0.15"><path d="M7.13,32.88L21.27,29.35,22.18,33.5,8,37Z M92.53,5.13l-4.24,1.06-0.91,4.15,4.24-1.06Z M3.18,63.22l-1.06,4.24,4.15,0.91,1.06-4.24Z M39.3,96.3l-4.15,0.91,1.06,4.24,4.15-0.91Z M23.82,2.84L20.29,17l4.15,0.91,3.54-14.14Z M82.17,92.53l-1.06,4.24,4.24,1.06,1.06-4.24Z M83.08,57.18L68.94,53.64l-0.91,4.15,14.14,3.54Z M58.47,4.22L54.94,18.36l4.15,0.91,3.54-14.14Z M23.82,82.17l-3.54,14.14,4.15,0.91,3.54-14.14Z M91.62,40.18l-14.14-3.54-0.91,4.15,14.14,3.54Z M66.45,95.39l-4.15,0.91,0.91,4.15,4.15-0.91Z M53.64,68.94l-3.54,14.14,4.15,0.91,3.54-14.14Z"/></g></pattern></defs><rect width="100%" height="100%" fill="url(%23spattern)"/></svg>'),
+        linear-gradient(to bottom right, #0F766E, #06B6D4);
+    background-size: auto, 100% 100%;
+}
+
+/* Attendance Button Styles */
+.attendance-btn.present {
+    background-color: #10B981; /* brand-green */
+    color: white;
+}
+.attendance-btn.absent {
+    background-color: #EF4444; /* brand-red */
+    color: white;
+}
+
+/* Timetable Grid Styles */
+.timetable-grid-container {
+    display: grid;
+    grid-template-columns: 60px repeat(6, 1fr); /* Time column + 6 days */
+    gap: 4px;
+}
+.timetable-header, .timetable-time, .timetable-slot {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
+.timetable-header {
+    background-color: #0d9488; /* brand-teal */
+    color: white;
+}
+.timetable-time {
+    background-color: #f3f4f6; /* gray-100 */
+}
+.dark .timetable-time {
+    background-color: #374151; /* gray-700 */
+}
+.timetable-slot {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 60px;
+}
+.dark .timetable-slot {
+    background-color: #1f2937; /* gray-800 */
+}

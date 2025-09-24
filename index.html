@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navi Kalam - Digital Learning App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Baloo+2:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel ="stylesheet" href="styles.css">
+    
+    <style>
+        #app-container.view-website {
+            max-width: 100%; margin: 0; border-radius: 0; box-shadow: none; height: 100vh;
+        }
+    </style>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#14B8A6">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="manifest" href="manifest.json">
+
+    <script>
+        tailwind.config = { 
+            darkMode: 'class',
+            theme: { extend: { colors: { brand: { teal: '#0D9488', green: '#10B981', red: '#EF4444', amber: '#F59E0B', blue: '#3B82F6' } } } }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 antialiased">
+
+    <div id="app-container" class="w-full min-h-screen bg-white dark:bg-gray-800 flex flex-col relative md:max-w-2xl md:mx-auto md:my-4 md:rounded-lg md:shadow-2xl overflow-hidden">
+        
+        <div id="splash-screen" class="screen active justify-center items-center flex-1 p-8 text-center flex-col">
+           <img src="logo.png" alt="My App Logo" class="w-48 h-48 logo-pop-in">
+           <h1 class="text-3xl font-bold text-white font-baloo mt-6 slide-up" style="animation-delay: 300ms;">Welcome to Navi Kalam</h1>
+        </div>
+        
+        <div id="language-screen" class="screen justify-center items-center flex-1 p-8 text-center bg-gray-50 dark:bg-gray-900">
+            <div class="w-full max-w-xs slide-up">
+                <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-10 font-baloo">Choose Your Language</h2>
+                <div class="space-y-4">
+                    <button onclick="selectLanguage('punjabi')" class="w-full bg-white dark:bg-gray-700 dark:text-white text-teal-600 border-2 border-teal-200 dark:border-teal-700 font-bold py-4 px-8 rounded-xl text-xl shadow-lg transform hover:scale-105 hover:bg-teal-50 dark:hover:bg-teal-900/50 transition-all duration-200">ਪੰਜਾਬੀ</button>
+                    <button onclick="selectLanguage('hindi')" class="w-full bg-white dark:bg-gray-700 dark:text-white text-teal-600 border-2 border-teal-200 dark:border-teal-700 font-bold py-4 px-8 rounded-xl text-xl shadow-lg transform hover:scale-105 hover:bg-teal-50 dark:hover:bg-teal-900/50 transition-all duration-200">हिन्दी</button>
+                    <button onclick="selectLanguage('english')" class="w-full bg-white dark:bg-gray-700 dark:text-white text-teal-600 border-2 border-teal-200 dark:border-teal-700 font-bold py-4 px-8 rounded-xl text-xl shadow-lg transform hover:scale-105 hover:bg-teal-50 dark:hover:bg-teal-900/50 transition-all duration-200">English</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="role-screen" class="screen justify-center flex-1 p-8 text-center bg-gray-50 dark:bg-gray-900">
+            <h2 id="role_screen_title" class="text-3xl font-bold text-gray-800 dark:text-white mb-10 font-baloo">Who are you?</h2>
+            <div class="space-y-6 w-full">
+                <div onclick="selectRole('student')" class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg text-center cursor-pointer transform hover:-translate-y-2 transition-transform duration-200 border-2 border-transparent hover:border-teal-500">
+                    <svg class="h-24 w-24 mx-auto mb-3 text-teal-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 16C9.85038 16.6303 10.8846 17 12 17C13.1154 17 14.1496 16.6303 15 16M13.0157 3.06456C12.6826 3.02192 12.3413 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 11.6587 20.9781 11.3174 20.9354 10.9843M17 3V7M19 5H15M13.8284 8.17157L16.6569 5.34315" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <h3 id="role_student_title" class="text-2xl font-bold text-gray-800 dark:text-white">Student</h3>
+                    <p class="text-gray-500 dark:text-gray-400">Start your learning journey</p>
+                </div>
+                <div onclick="selectRole('teacher')" class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-lg text-center cursor-pointer transform hover:-translate-y-2 transition-transform duration-200 border-2 border-transparent hover:border-green-500">
+                    <svg class="h-24 w-24 mx-auto mb-3 text-green-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 15L12 3M12 15L9 12M12 15L15 12M8 3H16M6 21H18M18 7V21H6V7H18Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <h3 id="role_teacher_title" class="text-2xl font-bold text-gray-800 dark:text-white">Teacher</h3>
+                    <p class="text-gray-500 dark:text-gray-400">Track progress & upload</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="student-login-screen" class="screen justify-center flex-1 p-8 bg-gray-50 dark:bg-gray-900"><button onclick="showScreen('role')" class="absolute top-5 left-5 text-gray-500 dark:text-gray-400"><i class="fas fa-arrow-left text-xl"></i></button>
+            <h2 id="student_login_title" class="text-3xl font-bold text-gray-800 dark:text-white mb-6 text-center font-baloo">Student Login</h2>
+            <div class="space-y-4">
+                <input id="student-email-input" type="email" placeholder="Email Address" class="w-full p-4 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-800 dark:text-white">
+                <input id="student-password-input" type="password" placeholder="Password (max 6 characters)" maxlength="6" class="w-full p-4 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-800 dark:text-white">
+            </div>
+            <p class="text-center text-sm mt-6">Don't have an account? <button onclick="showScreen('studentSignup')" class="font-semibold text-teal-500 hover:underline">Sign up here</button></p>
+            <button id="student_login_button" onclick="login('student')" class="w-full bg-teal-500 text-white font-bold py-4 px-8 rounded-xl text-xl mt-8 shadow-lg hover:bg-teal-600 transition-colors">Let's Go!</button>
+        </div>
+        
+        <div id="teacher-login-screen" class="screen justify-center flex-1 p-8 bg-gray-50 dark:bg-gray-900"><div><button onclick="showScreen('role')" class="absolute top-5 left-5 text-gray-500 dark:text-gray-400"><i class="fas fa-arrow-left text-xl"></i></button>
+            <h2 id="teacher_login_title" class="text-3xl font-bold text-gray-800 dark:text-white mb-6 text-center font-baloo">Teacher Login</h2>
+            <div class="space-y-4">
+                <input id="teacher-email-input" type="email" placeholder="Email Address" class="w-full p-4 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-800 dark:text-white">
+                <input id="teacher-password-input" type="password" placeholder="Password (max 6 characters)" maxlength="6" class="w-full p-4 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-800 dark:text-white">
+            </div>
+            <p class="text-center text-sm mt-6">First time teacher? <button onclick="showScreen('teacherSignup')" class="font-semibold text-green-500 hover:underline">Register here</button></p>
+            <button id="teacher_login_button" onclick="login('teacher')" class="w-full bg-green-500 text-white font-bold py-4 px-8 rounded-xl text-xl mt-8 shadow-lg hover:bg-green-600 transition-colors">Login</button>
+        </div></div>
+
+        <div id="student-signup-screen" class="screen justify-center flex-1 p-8 bg-gray-50 dark:bg-gray-900">
+            <div>
+                <button onclick="showScreen('studentLogin')" class="absolute top-5 left-5 text-gray-500 dark:text-gray-400"><i class="fas fa-arrow-left text-xl"></i></button>
+                <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-6 text-center font-baloo">Create Student Account</h2>
+                <div class="space-y-4">
+                    <input id="signup-student-name" type="text" placeholder="Full Name" class="w-full p-4 bg-white dark:bg-gray-800 border rounded-xl">
+                    <input id="signup-student-email" type="email" placeholder="Email Address" class="w-full p-4 bg-white dark:bg-gray-800 border rounded-xl">
+                    <input id="signup-student-password" type="password" placeholder="Password (max 6 characters)" maxlength="6" class="w-full p-4 bg-white dark:bg-gray-800 border rounded-xl">
+                </div>
+                <button onclick="signUp('student')" class="w-full bg-teal-500 text-white font-bold py-4 px-8 rounded-xl text-xl mt-8">Sign Up</button>
+            </div>
+        </div>
+
+        <div id="teacher-signup-screen" class="screen justify-center flex-1 p-8 bg-gray-50 dark:bg-gray-900">
+            <div>
+                <button onclick="showScreen('teacherLogin')" class="absolute top-5 left-5 text-gray-500 dark:text-gray-400"><i class="fas fa-arrow-left text-xl"></i></button>
+                <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-6 text-center font-baloo">Create Teacher Account</h2>
+                <div class="space-y-4">
+                    <input id="signup-teacher-name" type="text" placeholder="Full Name" class="w-full p-4 bg-white dark:bg-gray-800 border rounded-xl">
+                    <input id="signup-teacher-email" type="email" placeholder="Email Address" class="w-full p-4 bg-white dark:bg-gray-800 border rounded-xl">
+                    <input id="signup-teacher-password" type="password" placeholder="Password (max 6 characters)" maxlength="6" class="w-full p-4 bg-white dark:bg-gray-800 border rounded-xl">
+                </div>
+                <button onclick="signUp('teacher')" class="w-full bg-green-500 text-white font-bold py-4 px-8 rounded-xl text-xl mt-8">Register</button>
+            </div>
+        </div>
+        
+        <div id="sync-screen" class="screen flex-1 bg-gray-50 dark:bg-gray-900">
+            <header class="p-4 bg-white dark:bg-gray-800 sticky top-0 z-10 flex items-center border-b border-gray-200 dark:border-gray-700 shadow-sm">
+                <button onclick="showMainContent('home');" class="text-gray-600 dark:text-gray-300 mr-4"><i class="fas fa-arrow-left text-xl"></i></button>
+                <h1 class="text-xl font-bold text-gray-800 dark:text-white">Offline Sync</h1>
+            </header>
+            <main class="flex-1 p-6 flex flex-col justify-center items-center text-center">
+                
+                <p id="sync-status-text" class="mb-4 text-lg font-semibold text-gray-700 dark:text-gray-300 h-12">Ready to connect...</p>
+
+                <div id="qr-display" class="w-64 h-64 bg-white p-2 rounded-lg shadow-md mb-4 flex justify-center items-center"></div>
+                
+                <div id="qr-scanner-container" class="w-full max-w-sm border-2 border-dashed border-gray-400 rounded-lg overflow-hidden hidden">
+                    <div id="qr-scanner" style="width: 100%;"></div>
+                </div>
+
+                <div id="initial-buttons" class="mt-6 space-y-4 w-full max-w-xs">
+                    <button onclick="startHostSession()" class="w-full bg-teal-500 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-teal-600">
+                        I'm a Teacher (Start Session)
+                    </button>
+                    <button onclick="joinSession()" class="w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-blue-600">
+                        I'm a Student (Join Session)
+                    </button>
+                </div>
+
+                <div id="teacher-scan-answer-div" class="mt-6 w-full max-w-xs hidden">
+                     <button onclick="scanStudentAnswer()" class="w-full bg-green-500 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-green-600">
+                        Scan Student's Code
+                    </button>
+                </div>
+                <div id="teacher-sync-content-div" class="mt-6 w-full max-w-xs hidden">
+                     <button onclick="sendSyncData()" class="w-full bg-amber-500 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-amber-600">
+                        <i class="fas fa-sync-alt mr-2"></i>Sync Content to Student
+                    </button>
+                </div>
+            </main>
+        </div>
+        <div id="main-app" class="screen flex-1">
+            <header class="p-4 bg-white dark:bg-gray-800 sticky top-0 z-20 flex justify-between items-center border-b border-gray-200 dark:border-gray-700 shadow-sm">
+                <button onclick="toggleMenu()" class="text-gray-600 dark:text-gray-300 text-2xl"><i class="fas fa-bars"></i></button>
+                <div class="text-center"><h1 id="main_app_title" class="text-xl font-bold text-gray-800 dark:text-white font-baloo">Navi Kalam</h1></div>
+                <div id="sync-status" class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1.5 rounded-full flex items-center space-x-1.5"><i class="fas fa-cloud"></i><span id="sync_status_text">Synced</span></div>
+            </header>
+            <div class="flex-1 relative">
+                <main id="app-main-content" class="absolute inset-0 p-4 overflow-y-auto bg-gray-50 dark:bg-gray-900"></main>
+            </div>
+            <nav id="bottom-nav" class="grid grid-cols-4 gap-2 p-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                <button id="nav-home" onclick="showMainContent('home')" class="nav-button active flex flex-col items-center justify-center p-2 rounded-lg"><i class="fas fa-home text-2xl"></i><span id="nav_home_text" class="text-xs font-semibold mt-1">Home</span></button>
+                <button id="nav-learn" onclick="showMainContent('learn')" class="nav-button text-gray-500 dark:text-gray-400 flex flex-col items-center justify-center p-2 rounded-lg"><i class="fas fa-book-open text-2xl"></i><span id="nav_learn_text" class="text-xs font-semibold mt-1">Learn</span></button>
+                <button id="nav-practice" onclick="showMainContent('practice')" class="nav-button text-gray-500 dark:text-gray-400 flex flex-col items-center justify-center p-2 rounded-lg"><i class="fas fa-pencil-ruler text-2xl"></i><span id="nav_practice_text" class="text-xs font-semibold mt-1">Practice</span></button>
+                <button id="nav-rewards" onclick="showMainContent('rewards')" class="nav-button text-gray-500 dark:text-gray-400 flex flex-col items-center justify-center p-2 rounded-lg"><i class="fas fa-trophy text-2xl"></i><span id="nav_rewards_text" class="text-xs font-semibold mt-1">Rewards</span></button>
+            </nav>
+        </div>
+
+        <div id="chapter-list-screen" class="screen flex-1 bg-gray-50 dark:bg-gray-900">
+            <header class="p-4 bg-white dark:bg-gray-800 sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 dark:border-gray-700 shadow-sm"><div class="flex items-center"><button onclick="showScreen('main'); showMainContent('learn');" class="text-gray-600 dark:text-gray-300 mr-4"><i class="fas fa-arrow-left text-xl"></i></button><div><h1 id="chapter-list-title" class="text-xl font-bold text-gray-800 dark:text-white"></h1></div></div>
+                <button id="doubt-forum-button" onclick="showScreen('doubtForum')" class="text-sm bg-teal-500 text-white font-semibold py-2 px-3 rounded-lg flex items-center space-x-2 shadow-sm hover:bg-teal-600"><i class="fas fa-comments"></i><span id="doubt_forum_button_text">Doubt Forum</span></button>
+            </header>
+            <main class="flex-1 p-6 overflow-y-auto" id="chapter-list-content"></main>
+        </div>
+        
+        <div id="lesson-screen" class="screen flex-1 bg-gray-50 dark:bg-gray-900">
+            <header class="p-4 bg-white dark:bg-gray-800 sticky top-0 z-10 flex items-center border-b border-gray-200 dark:border-gray-700 shadow-sm"><button onclick="showScreen('chapterList')" class="text-gray-600 dark:text-gray-300 mr-4"><i class="fas fa-arrow-left text-xl"></i></button><div><h1 id="lesson-title" class="text-xl font-bold text-gray-800 dark:text-white"></h1><p id="lesson-subject" class="text-sm text-gray-500 dark:text-gray-400"></p></div></header>
+            <div class="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 sticky top-[73px] z-10"><nav class="-mb-px flex justify-around" aria-label="Tabs">
+                <button id="lesson_tab_lesson" onclick="showLessonTab('lesson-content')" class="lesson-tab border-teal-500 text-teal-600 w-1/3 py-4 px-1 text-center border-b-2 font-medium text-sm">📖 Lesson</button>
+                <button id="lesson_tab_summary" onclick="showLessonTab('summary-content')" class="lesson-tab border-transparent text-gray-500 w-1/3 py-4 px-1 text-center border-b-2 font-medium text-sm">✨ Summary</button>
+                <button id="lesson_tab_quiz" onclick="showLessonTab('quiz-content')" class="lesson-tab border-transparent text-gray-500 w-1/3 py-4 px-1 text-center border-b-2 font-medium text-sm">🤔 Quiz</button>
+            </nav></div>
+            <main class="flex-1 p-5 overflow-y-auto"><div id="lesson-content" class="lesson-tab-content space-y-4"></div><div id="summary-content" class="lesson-tab-content hidden space-y-3"></div><div id="quiz-content" class="lesson-tab-content hidden space-y-6"></div></main>
+        </div>
+        
+        <div id="whiteboard-screen" class="screen fixed inset-0 bg-gray-200 dark:bg-gray-900 z-50">
+            <header class="p-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm absolute top-0 left-0 right-0 z-10 flex items-center justify-between border-b border-gray-200 dark:border-gray-700 shadow-sm">
+                <h1 id="whiteboard_title_text" class="text-lg font-bold text-gray-800 dark:text-white ml-4">Digital Whiteboard</h1>
+                <button onclick="showScreen('main'); showMainContent('practice');" class="text-sm bg-red-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center space-x-2 shadow-sm hover:bg-red-600 mr-2">
+                    <i class="fas fa-times"></i><span id="whiteboard_close_button">Close</span>
+                </button>
+            </header>
+            
+            <div class="w-full h-full flex justify-center items-center fullscreen-whiteboard-padding">
+                <canvas id="whiteboard-canvas" class="bg-white dark:bg-gray-700 rounded-lg shadow-inner w-full h-full cursor-crosshair"></canvas>
+            </div>
+        
+            <div id="whiteboard-toolbar" class="p-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm absolute bottom-0 left-0 right-0 border-t border-gray-200 dark:border-gray-700 flex flex-wrap justify-center items-center gap-4">
+                <div class="flex items-center gap-2 border-r border-gray-300 dark:border-gray-600 pr-3">
+                    <button id="pen-tool" onclick="setTool('pen')" class="wb-tool active-tool text-2xl p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"><i class="fas fa-pencil-alt"></i></button>
+                    <button id="eraser-tool" onclick="setTool('eraser')" class="wb-tool text-2xl p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"><i class="fas fa-eraser"></i></button>
+                </div>
+                <div class="flex items-center gap-2 border-r border-gray-300 dark:border-gray-600 pr-3">
+                    <button id="size-small" onclick="setPenSize(3)" class="wb-size p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"><div class="w-2 h-2 bg-black rounded-full"></div></button>
+                    <button id="size-medium" onclick="setPenSize(8)" class="wb-size active-size p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"><div class="w-4 h-4 bg-black rounded-full"></div></button>
+                    <button id="size-large" onclick="setPenSize(15)" class="wb-size p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"><div class="w-6 h-6 bg-black rounded-full"></div></button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="setPenColor('#000000')" class="wb-color active-color w-8 h-8 rounded-full bg-black border-2 border-transparent"></button>
+                    <button onclick="setPenColor('#ef4444')" class="wb-color w-8 h-8 rounded-full bg-red-500 border-2 border-transparent"></button>
+                    <button onclick="setPenColor('#3b82f6')" class="wb-color w-8 h-8 rounded-full bg-blue-500 border-2 border-transparent"></button>
+                    <button onclick="setPenColor('#22c55e')" class="wb-color w-8 h-8 rounded-full bg-green-500 border-2 border-transparent"></button>
+                </div>
+                <div class="flex items-center gap-2 border-l border-gray-300 dark:border-gray-600 pl-3">
+                    <button onclick="undoLast()" class="text-2xl p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"><i class="fas fa-undo"></i></button>
+                    <button onclick="clearCanvas()" class="text-2xl p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 text-red-500"><i class="fas fa-trash-alt"></i></button>
+                    <button onclick="saveDrawing()" class="text-2xl p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 text-teal-500"><i class="fas fa-save"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="doubt-forum-screen" class="screen flex-1 bg-gray-50 dark:bg-gray-900">
+            <header class="p-4 bg-white dark:bg-gray-800 sticky top-0 z-10 flex items-center border-b border-gray-200 dark:border-gray-700 shadow-sm"><button onclick="showScreen('chapterList')" class="text-gray-600 dark:text-gray-300 mr-4"><i class="fas fa-arrow-left text-xl"></i></button><h1 id="doubt-forum-title" class="text-xl font-bold text-gray-800 dark:text-white">Doubt Forum</h1></header>
+            <main id="doubt-list-container" class="flex-1 p-4 overflow-y-auto space-y-3"></main>
+            <div class="p-4 bg-white dark:bg-gray-800 border-t"><button id="ask_question_button" onclick="toggleQuestionModal(true)" class="w-full bg-teal-500 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-teal-600 transition-colors">Ask a New Question</button></div>
+        </div>
+        
+         <div id="showcase-screen" class="screen flex-1 bg-gray-50 dark:bg-gray-900">
+            <header class="p-4 bg-white dark:bg-gray-800 sticky top-0 z-10 flex items-center border-b border-gray-200 dark:border-gray-700 shadow-sm"><button onclick="showScreen('main')" class="text-gray-600 dark:text-gray-300 mr-4"><i class="fas fa-arrow-left text-xl"></i></button><h1 id="showcase_title_text" class="text-xl font-bold text-gray-800 dark:text-white">Community Showcase</h1></header>
+            <main class="flex-1 p-4 overflow-y-auto"><div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4"><h3 id="work_of_week_title_text" class="text-lg font-bold text-amber-500 mb-2">🏆 Work of the Week</h3><img src="https://placehold.co/600x400/d1fae5/10b981?text=Beautiful+Flower+Drawing" class="rounded-lg w-full" alt="Drawing of a flower"><p id="example_drawing_title_text" class="font-semibold mt-2 text-gray-800 dark:text-white">Diagram of a Flower</p><p id="example_drawing_author_text" class="text-sm text-gray-500 dark:text-gray-400">by Priya, Class 6</p></div></main>
+        </div>
+
+        <div id="practice-test-screen" class="screen flex-1 bg-gray-50 dark:bg-gray-900">
+            <header class="p-4 bg-white dark:bg-gray-800 sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 dark:border-gray-700 shadow-sm">
+                <div class="flex items-center">
+                    <button onclick="showScreen('main'); showMainContent('practice');" class="text-gray-600 dark:text-gray-300 mr-4"><i class="fas fa-arrow-left text-xl"></i></button>
+                    <h1 id="practice-test-title" class="text-xl font-bold text-gray-800 dark:text-white">Take a Test</h1>
+                </div>
+                <button id="stop-test-btn" onclick="stopTestAndShowResults()" class="hidden text-sm bg-red-500 text-white font-semibold py-2 px-3 rounded-lg flex items-center space-x-2 shadow-sm hover:bg-red-600">
+                    <i class="fas fa-stop-circle"></i><span>Stop Test</span>
+                </button>
+            </header>
+            <main id="practice-test-content" class="flex-1 p-6 overflow-y-auto"></main>
+        </div>
+
+        <div id="teacher-dashboard-screen" class="screen flex-1 bg-gray-50 dark:bg-gray-900">
+            <header class="p-4 bg-white dark:bg-gray-800 sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 dark:border-gray-700 shadow-sm">
+                <button onclick="toggleTeacherMenu()" class="text-gray-600 dark:text-gray-300 text-2xl"><i class="fas fa-bars"></i></button>
+                <h1 id="teacher_dashboard_title" class="text-xl font-bold text-gray-800 dark:text-white">Teacher Dashboard</h1>
+                <div id="teacher-sync-status" class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1.5 rounded-full flex items-center space-x-1.5"><i class="fas fa-cloud"></i><span id="teacher_sync_status_text">Synced</span></div>
+            </header>
+            
+            <div class="flex-1 relative">
+                <main id="teacher-main-content" class="absolute inset-0 p-4 overflow-y-auto"></main>
+                
+                <div id="student-actions-dropdown" class="hidden absolute right-6 bg-white dark:bg-gray-700 rounded-lg shadow-xl border dark:border-gray-600 w-48 py-2 z-20">
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"><i class="fas fa-chart-line w-6"></i> View Progress</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"><i class="fas fa-comment-alt w-6"></i> Send Message</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"><i class="fas fa-user-edit w-6"></i> Edit Profile</a>
+                </div>
+            </div>
+
+            <nav id="teacher-bottom-nav" class="grid grid-cols-5 gap-2 p-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                <button onclick="showTeacherContent('progress')" class="nav-button active flex flex-col items-center justify-center p-2 rounded-lg">
+                    <i class="fas fa-users text-2xl"></i><span class="teacher-nav-progress-text text-xs font-semibold mt-1">Progress</span>
+                </button>
+                <button onclick="showTeacherContent('uploads')" class="nav-button text-gray-500 dark:text-gray-400 flex flex-col items-center justify-center p-2 rounded-lg">
+                    <i class="fas fa-upload text-2xl"></i><span class="text-xs font-semibold mt-1">Uploads</span>
+                </button>
+                <button onclick="toggleAddStudentModal(true)" class="nav-button text-gray-500 dark:text-gray-400 flex flex-col items-center justify-center p-2 rounded-lg">
+                    <i class="fas fa-user-plus text-2xl"></i><span class="teacher-nav-add-text text-xs font-semibold mt-1">Add Student</span>
+                </button>
+                <button onclick="showTeacherContent('attendance')" class="nav-button text-gray-500 dark:text-gray-400 flex flex-col items-center justify-center p-2 rounded-lg">
+                    <i class="fas fa-calendar-check text-2xl"></i><span class="teacher-nav-attendance-text text-xs font-semibold mt-1">Attendance</span>
+                </button>
+                <button onclick="showTeacherContent('timetable')" class="nav-button text-gray-500 dark:text-gray-400 flex flex-col items-center justify-center p-2 rounded-lg">
+                    <i class="fas fa-clock text-2xl"></i><span class="teacher-nav-timetable-text text-xs font-semibold mt-1">Timetable</span>
+                </button>
+            </nav>
+        </div>
+
+        <div id="student-details-screen" class="screen flex-1 bg-gray-50 dark:bg-gray-900">
+             <header class="p-4 bg-white dark:bg-gray-800 sticky top-0 z-10 flex items-center border-b border-gray-200 dark:border-gray-700 shadow-sm">
+                <button onclick="showScreen('teacherDashboard')" class="text-gray-600 dark:text-gray-300 mr-4"><i class="fas fa-arrow-left text-xl"></i></button>
+                <div class="flex items-center space-x-3">
+                    <img id="details-student-avatar" src="./assets/avatar1.svg" class="w-10 h-10 rounded-full" alt="Student Avatar">
+                    <div>
+                        <h1 id="details-student-name" class="text-xl font-bold text-gray-800 dark:text-white">Student Name</h1>
+                        <p id="details_student_subtitle" class="text-sm text-gray-500 dark:text-gray-400">Subject Progress</p>
+                    </div>
+                </div>
+            </header>
+            <main id="details-subject-list" class="flex-1 p-4 overflow-y-auto space-y-4">
+            </main>
+        </div>
+
+        <div id="edit-timetable-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex justify-center items-center p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-md slide-up max-h-[90vh] flex flex-col">
+                <h3 id="edit_timetable_modal_title" class="text-xl font-bold text-gray-800 dark:text-white mb-4">Edit Timetable</h3>
+                <div id="edit-timetable-form" class="flex-1 overflow-y-auto space-y-4">
+                </div>
+                <div classs="flex justify-end space-x-3 mt-6">
+                    <button id="modal_cancel_button" onclick="toggleEditTimetableModal(false)" class="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg font-semibold">Cancel</button>
+                    <button id="modal_save_button" onclick="saveTimetable()" class="px-4 py-2 bg-blue-500 text-white rounded-lg font-semibold">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="avatar-assets" class="hidden">
+            <svg id="avatar1" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#ffc107"/><path d="M50 65c-11 0-20 9-20 20h40c0-11-9-20-20-20z" fill="#333"/><circle cx="35" cy="45" r="5" fill="#333"/><circle cx="65" cy="45" r="5" fill="#333"/><path d="M40 60s5 5 10 5 10-5 10-5-5-5-10-5-10 5-10 5z" fill="#333"/></svg>
+            <svg id="avatar2" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#4caf50"/><path d="M50 65c-11 0-20 9-20 20h40c0-11-9-20-20-20z" fill="#fff"/><rect x="30" y="40" width="10" height="15" fill="#fff"/><rect x="60" y="40" width="10" height="15" fill="#fff"/><path d="M35 70h30v5H35z" fill="#fff"/></svg>
+            <svg id="avatar3" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#2196f3"/><path d="M50 70c-15 0-25 10-25 10s10 5 25 5 25-5 25-5-10-10-25-10z" fill="#fff"/><circle cx="35" cy="45" r="7" fill="#fff"/><circle cx="65" cy="45" r="7" fill="#fff"/><path d="M40 55 C 45 65, 55 65, 60 55" stroke="#fff" stroke-width="3" fill="none"/></svg>
+            <svg id="avatar4" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#e91e63"/><path d="M50 20 L20 80 H 80 Z" fill="#fff"/><circle cx="50" cy="60" r="10" fill="#e91e63"/></svg>
+            <svg id="guide-avatar" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#14B8A6"/><circle cx="50" cy="30" r="25" fill="#F0FDFA"/><circle cx="50" cy="30" r="20" fill="#fff"/><circle cx="42" cy="30" r="5" fill="#134E4A"/><circle cx="58" cy="30" r="5" fill="#134E4A"/><path d="M40 45 Q 50 55 60 45" stroke="#134E4A" stroke-width="3" fill="none" stroke-linecap="round"/><rect x="45" y="10" width="10" height="5" fill="#14B8A6" /></svg>
+        </div>
+        
+        <div id="menu-overlay" onclick="toggleMenu()" class="fixed inset-0 bg-black/50 z-30 opacity-0 pointer-events-none"></div>
+        <div id="side-menu" class="fixed top-0 left-0 h-full w-72 bg-white dark:bg-gray-800 shadow-2xl z-40 transform -translate-x-full">
+            <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center space-x-3"><img id="menu-avatar" src="./assets/avatar1.svg" class="w-12 h-12 rounded-full" alt="User Avatar"><div><h2 id="menu-username" class="text-lg font-bold text-gray-800 dark:text-white">Student</h2><p class="text-sm text-gray-500 dark:text-gray-400">5 Day Streak! 🔥</p></div></div>
+            <nav class="p-4 space-y-2">
+                <a href="#" onclick="showMainContent('profile'); toggleMenu();" class="flex items-center space-x-4 p-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-user-circle w-6 text-center text-xl"></i><span id="menu_profile_text">Profile</span></a>
+                <a href="#" onclick="showMainContent('syllabus'); toggleMenu();" class="flex items-center space-x-4 p-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-list-alt w-6 text-center text-xl"></i><span id="menu_syllabus_text">Syllabus</span></a>
+                <a href="#" onclick="showMainContent('timetable'); toggleMenu();" class="flex items-center space-x-4 p-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-clock w-6 text-center text-xl"></i><span id="menu_timetable_text">Timetable</span></a>
+                <a href="#" onclick="showMainContent('attendance'); toggleMenu();" class="flex items-center space-x-4 p-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-calendar-check w-6 text-center text-xl"></i><span id="menu_attendance_text">Attendance</span></a>
+                <a href="#" onclick="showMainContent('settings'); toggleMenu();" class="flex items-center space-x-4 p-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-cog w-6 text-center text-xl"></i><span id="menu_settings_text">Settings</span></a>
+                <a href="#" onclick="showMainContent('offline'); toggleMenu();" class="flex items-center space-x-4 p-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-cloud-download-alt w-6 text-center text-xl"></i><span id="menu_offline_text">Offline Manager</span></a>
+                <a href="#" onclick="startGuide(); toggleMenu();" class="flex items-center space-x-4 p-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-question-circle w-6 text-center text-xl"></i><span id="menu_guide_text">Guide</span></a>
+            </nav>
+            <div class="absolute bottom-0 w-full p-4 border-t border-gray-200 dark:border-gray-700"><button onclick="showScreen('role')" class="w-full flex items-center space-x-4 p-3 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"><i class="fas fa-sign-out-alt w-6 text-center text-xl"></i><span id="menu_logout_text">Log Out</span></button></div>
+        </div>
+
+        <div id="teacher-menu-overlay" onclick="toggleTeacherMenu()" class="fixed inset-0 bg-black/50 z-30 opacity-0 pointer-events-none"></div>
+        <div id="teacher-side-menu" class="fixed top-0 left-0 h-full w-72 bg-white dark:bg-gray-800 shadow-2xl z-40 transform -translate-x-full">
+            <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-lg font-bold text-gray-800 dark:text-white">Teacher Menu</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Navi Kalam</p>
+            </div>
+            <nav class="p-4 space-y-2">
+                <a href="#" onclick="showScreen('sync'); toggleTeacherMenu();" class="flex items-center space-x-4 p-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-wifi w-6 text-center text-xl"></i><span>Offline Manager</span></a>
+                <a href="#" onclick="showTeacherContent('settings'); toggleTeacherMenu();" class="flex items-center space-x-4 p-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-cog w-6 text-center text-xl"></i><span id="teacher_menu_settings_text">App Settings</span></a>
+                <a href="#" onclick="startGuide('teacher'); toggleTeacherMenu();" class="flex items-center space-x-4 p-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-question-circle w-6 text-center text-xl"></i><span id="teacher_menu_guide_text">Help & Guide</span></a>
+            </nav>
+            <div class="absolute bottom-0 w-full p-4 border-t border-gray-200 dark:border-gray-700">
+                <button onclick="showScreen('role')" class="w-full flex items-center space-x-4 p-3 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"><i class="fas fa-sign-out-alt w-6 text-center text-xl"></i><span id="teacher_menu_logout_text">Log Out</span></button>
+            </div>
+        </div>
+
+
+        <div id="ask-question-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex justify-center items-center p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-sm slide-up">
+                <h3 id="ask_question_modal_title" class="text-xl font-bold text-gray-800 dark:text-white mb-4">Ask a New Question</h3>
+                <textarea id="question-textarea" class="w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-800 dark:text-white" rows="4" placeholder="Type your question here..."></textarea>
+                <div class="flex justify-end space-x-3 mt-4">
+                    <button id="ask_question_cancel_button" onclick="toggleQuestionModal(false)" class="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg font-semibold">Cancel</button>
+                    <button id="ask_question_submit_button" onclick="submitQuestion()" class="px-4 py-2 bg-teal-500 text-white rounded-lg font-semibold">Submit</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="add-student-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex justify-center items-center p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-sm slide-up">
+                <h3 id="add_student_modal_title" class="text-xl font-bold text-gray-800 dark:text-white mb-4">Add New Student</h3>
+                <div class="space-y-4">
+                    <input id="new-student-name-input" type="text" placeholder="Student's Full Name" class="w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-800 dark:text-white">
+                    <div>
+                        <p id="choose_avatar_title_text" class="text-sm text-gray-600 dark:text-gray-400 mb-2">Choose Avatar</p>
+                        <div class="grid grid-cols-4 gap-4">
+                            <img src="./assets/avatar1.svg" onclick="selectNewStudentAvatar('avatar1', this)" class="new-avatar-option w-12 h-12 rounded-full cursor-pointer opacity-60 hover:opacity-100">
+                            <img src="./assets/avatar2.svg" onclick="selectNewStudentAvatar('avatar2', this)" class="new-avatar-option w-12 h-12 rounded-full cursor-pointer opacity-60 hover:opacity-100">
+                            <img src="./assets/avatar3.svg" onclick="selectNewStudentAvatar('avatar3', this)" class="new-avatar-option w-12 h-12 rounded-full cursor-pointer opacity-60 hover:opacity-100">
+                            <img src="./assets/avatar4.svg" onclick="selectNewStudentAvatar('avatar4', this)" class="new-avatar-option w-12 h-12 rounded-full cursor-pointer opacity-60 hover:opacity-1Loss">
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button id="add_student_cancel_button" onclick="toggleAddStudentModal(false)" class="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg font-semibold">Cancel</button>
+                    <button id="add_student_add_button" onclick="addNewStudent()" class="px-4 py-2 bg-teal-500 text-white rounded-lg font-semibold">Add Student</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="notes-viewer-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-11/12 h-5/6 flex flex-col max-w-4xl">
+                <header class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                    <h3 id="notes-viewer-title" class="font-bold text-lg text-gray-800 dark:text-white">Document Viewer</h3>
+                    <button onclick="closeNotesViewer()" class="text-gray-500 hover:text-gray-800 dark:hover:text-white">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </header>
+                <div class="flex-1 p-2 bg-gray-200 dark:bg-gray-900">
+                    <iframe id="notes-viewer-iframe" src="" class="w-full h-full border-0 rounded-b-lg"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div id="guide-overlay" class="hidden fixed inset-0 z-[100]">
+             <div id="guide-tooltip" class="guide-tooltip bg-white dark:bg-gray-800 p-4 rounded-lg shadow-xl text-gray-800 dark:text-white w-72 flex space-x-3 items-start">
+                  <img id="guide-avatar-img" src="./assets/guide-avatar.svg" class="w-12 h-12 flex-shrink-0" alt="Guide character">
+                  <div>
+                       <p id="guide-text" class="text-sm mb-3"></p>
+                       <div class="flex justify-between items-center">
+                            <button id="guide_skip_button" onclick="endGuide()" class="text-xs text-gray-500 hover:underline">Skip Tour</button>
+                            <button id="guide_next_button" onclick="nextGuideStep()" class="px-4 py-2 bg-teal-500 text-white rounded-lg font-semibold text-sm">Next</button>
+                       </div>
+                  </div>
+             </div>
+        </div>
+
+        <div id="confetti-container" class="fixed inset-0 pointer-events-none z-[999]"></div>
+
+        <div id="test-report-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex justify-center items-center p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-md slide-up max-h-[90vh] flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                     <h3 class="text-xl font-bold text-gray-800 dark:text-white">Test Report Details</h3>
+                     <button onclick="closeTestReportModal()" class="text-gray-500 hover:text-gray-800 dark:hover:text-white">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                </div>
+                <div class="flex-1 overflow-y-auto pr-2">
+                    <div class="space-y-2 text-gray-700 dark:text-gray-300 mb-4">
+                        <p><strong>Subject:</strong> <span id="report-subject"></span></p>
+                        <p><strong>Chapter:</strong> <span id="report-chapter"></span></p>
+                        <p><strong>Final Score:</strong> <span id="report-score" class="font-bold text-lg"></span></p>
+                        <p><strong>Total Time:</strong> <span id="report-total-time"></span></p>
+                        <p><strong>Average Time/Q:</strong> <span id="report-avg-time"></span></p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800 dark:text-white mb-2 border-t pt-3 dark:border-gray-600">Per-Question Breakdown:</h4>
+                        <div id="report-breakdown-list" class="space-y-2">
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="./html5-qrcode.min.js"></script>
+    <script type="text/javascript" src="./qrcode.js"></script>
+
+
+    
+    <script type="module" src="main.js" defer></script>
+    
+</body>
+</html>

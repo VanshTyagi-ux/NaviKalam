@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Navi Kalam</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        // Tailwind dark mode configuration
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 overflow-hidden">
+
+    <div id="app-container" class="max-w-md mx-auto h-screen bg-gray-100 dark:bg-gray-900 shadow-2xl flex flex-col relative">
+
+        <div id="avatar-assets" class="hidden">
+            <svg id="avatar1" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><circle cx="64" cy="64" r="64" fill="#ffb02e"/><path fill="#462e00" d="M112.5 96.5a56.5 56.5 0 0 1-97 0c0-15.6 21.7-28.2 48.5-28.2s48.5 12.7 48.5 28.2z"/><path fill="#fff" d="M68.5 68.3a20.4 20.4 0 0 0-9 0 20.4 20.4 0 0 0-20.8 20.2c0 2.2 1.8 4 4 4h42.5a4 4 0 0 0 4-4 20.4 20.4 0 0 0-20.7-20.2z"/><path fill="#462e00" d="M37.8 48.2c0 1.8-1.4 3.2-3.2 3.2s-3.2-1.4-3.2-3.2 1.4-3.2 3.2-3.2 3.2 1.5 3.2 3.2zm52.5 0c0 1.8-1.4 3.2-3.2 3.2s-3.2-1.4-3.2-3.2 1.4-3.2 3.2-3.2 3.2 1.5 3.2 3.2z"/></svg>
+            <svg id="avatar2" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><circle cx="64" cy="64" r="64" fill="#64b5f6"/><path fill="#213d5b" d="M112.5 96.5a56.5 56.5 0 0 1-97 0c0-15.6 21.7-28.2 48.5-28.2s48.5 12.7 48.5 28.2z"/><path fill="#fff" d="M89.2 47.9a3.2 3.2 0 1 1-6.4 0 3.2 3.2 0 0 1 6.4 0zm-51.3 0a3.2 3.2 0 1 1-6.4 0 3.2 3.2 0 0 1 6.4 0z"/><path fill="#213d5b" d="M51.9 66a12.8 12.8 0 0 0 24.2 0z"/></svg>
+            <svg id="avatar3" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><circle cx="64" cy="64" r="64" fill="#e57373"/><path fill="#5d2a2a" d="M112.5 96.5a56.5 56.5 0 0 1-97 0c0-15.6 21.7-28.2 48.5-28.2s48.5 12.7 48.5 28.2z"/><path fill="#fff" d="M89.2 47.9a3.2 3.2 0 1 1-6.4 0 3.2 3.2 0 0 1 6.4 0zm-51.3 0a3.2 3.2 0 1 1-6.4 0 3.2 3.2 0 0 1 6.4 0z"/><path fill="#5d2a2a" d="M82.8 68.3a19.7 19.7 0 0 1-37.6 0z"/></svg>
+            <svg id="avatar4" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><circle cx="64" cy="64" r="64" fill="#81c784"/><path fill="#335034" d="M112.5 96.5a56.5 56.5 0 0 1-97 0c0-15.6 21.7-28.2 48.5-28.2s48.5 12.7 48.5 28.2z"/><path fill="#fff" d="M89.2 47.9a3.2 3.2 0 1 1-6.4 0 3.2 3.2 0 0 1 6.4 0zm-51.3 0a3.2 3.2 0 1 1-6.4 0 3.2 3.2 0 0 1 6.4 0z"/><path fill="#335034" d="M48.2 61.8h31.6c1.8 0 3.2 1.4 3.2 3.2v0c0 1.8-1.4 3.2-3.2 3.2H48.2c-1.8 0-3.2-1.4-3.2-3.2v0c0-1.8 1.4-3.2 3.2-3.2z"/></svg>
+        </div>
+
+        <div id="splash-screen" class="screen active h-full flex-col justify-center items-center text-white text-center p-8">
+            <div class="logo-pop-in">
+                <i class="fas fa-pencil-alt text-8xl"></i>
+                <h1 class="text-5xl font-extrabold font-baloo mt-4">Navi Kalam</h1>
+                <p class="mt-2 text-lg">Your friendly learning companion</p>
+            </div>
+        </div>
+
+        <div id="language-screen" class="screen h-full flex-col justify-center items-center p-8">
+            <h2 id="choose_language_title" class="text-2xl font-bold mb-8 text-center">Choose Your Language</h2>
+            <div class="w-full max-w-xs space-y-4">
+                <button onclick="selectLanguage('english')" class="w-full text-lg font-semibold bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md transform hover:scale-105 transition-transform">English</button>
+                <button onclick="selectLanguage('punjabi')" class="w-full text-lg font-semibold bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md transform hover:scale-105 transition-transform">ਪੰਜਾਬੀ</button>
+                <button onclick="selectLanguage('hindi')" class="w-full text-lg font-semibold bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md transform hover:scale-105 transition-transform">हिन्दी</button>
+            </div>
+        </div>
+        
+        <div id="role-screen" class="screen h-full flex-col justify-center items-center p-8">
+            <h2 id="role_screen_title" class="text-2xl font-bold mb-8 text-center">Who are you?</h2>
+            <div class="w-full max-w-xs space-y-4">
+                <button onclick="selectRole('student')" class="w-full text-lg font-semibold bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md flex items-center justify-center space-x-3 transform hover:scale-105 transition-transform"><i class="fas fa-user-graduate text-teal-500"></i><span id="role_student_title">Student</span></button>
+                <button onclick="selectRole('teacher')" class="w-full text-lg font-semibold bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md flex items-center justify-center space-x-3 transform hover:scale-105 transition-transform"><i class="fas fa-chalkboard-teacher text-blue-500"></i><span id="role_teacher_title">Teacher</span></button>
+            </div>
+        </div>
+
+        <div id="student-login-screen" class="screen h-full flex-col justify-center items-center p-8">
+            <h2 id="student_login_title" class="text-3xl font-bold font-baloo mb-8">Student Login</h2>
+            <div class="w-full max-w-xs space-y-4">
+                <input id="student-name-input" type="text" placeholder="Your Name" class="w-full p-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500">
+                
+                <input id="Password" type="password" placeholder="Password" class="w-full p-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500" maxlength="4">
+                <button onclick="login('student')" class="w-full bg-teal-500 text-white font-bold py-3 rounded-lg shadow-md hover:bg-teal-600 transition-colors" id="student_login_button">Let's Go!</button>
+            </div>
+        </div>
+
+        <div id="teacher-login-screen" class="screen h-full flex-col justify-center items-center p-8">
+            <h2 id="teacher_login_title" class="text-3xl font-bold font-baloo mb-8">Teacher Login</h2>
+            <div class="w-full max-w-xs space-y-4">
+                <input id="teacher_id_input" type="text" placeholder="School ID" class="w-full p-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <input id="teacher_password_input" type="password" placeholder="Password" class="w-full p-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button onclick="login('teacher')" class="w-full bg-blue-500 text-white font-bold py-3 rounded-lg shadow-md hover:bg-blue-600 transition-colors" id="teacher_login_button">Login</button>
+            </div>
+        </div>
+        
+        <div id="main-app" class="screen flex-1 flex-col overflow-hidden">
+            <header class="flex-shrink-0 flex items-center justify-between p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <button id="main-menu-button" onclick="toggleMenu()" class="text-xl p-2"><i class="fas fa-bars"></i></button>
+                <h1 id="main_app_title" class="text-xl font-bold font-baloo">Navi Kalam</h1>
+                <div class="flex items-center space-x-3">
+                    <div class="text-xs text-green-600 dark:text-green-400 font-semibold flex items-center space-x-1"><i class="fas fa-wifi"></i><span id="sync_status_text">Synced</span></div>
+                    <button onclick="showScreen('doubtForum')" class="text-xl p-2"><i class="fas fa-comments"></i></button>
+                </div>
+            </header>
+            
+            <div id="menu-overlay" onclick="toggleMenu()" class="fixed inset-0 bg-black bg-opacity-50 z-40 opacity-0 pointer-events-none"></div>
+            <div id="side-menu" class="fixed top-0 left-0 w-64 h-full bg-white dark:bg-gray-800 shadow-lg z-50 transform -translate-x-full">
+                <div class="p-4">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <img id="menu-avatar" src="./assets/avatar1.svg" class="w-12 h-12 rounded-full" alt="User avatar">
+                        <div>
+                            <h3 id="menu-username" class="font-bold">Student</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Class 8</p>
+                        </div>
+                    </div>
+                    <nav class="space-y-2">
+                         <a href="#" onclick="showMainContent('profile'); toggleMenu();" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-user-circle w-6 text-center text-gray-500 dark:text-gray-400"></i><span id="menu_profile_text">Profile</span></a>
+                         <a href="#" onclick="showMainContent('syllabus'); toggleMenu();" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-book-open w-6 text-center text-gray-500 dark:text-gray-400"></i><span id="menu_syllabus_text">Syllabus</span></a>
+                         <a href="#" onclick="showMainContent('timetable'); toggleMenu();" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-calendar-alt w-6 text-center text-gray-500 dark:text-gray-400"></i><span id="menu_timetable_text">Timetable</span></a>
+                         <a href="#" onclick="showMainContent('attendance'); toggleMenu();" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-user-check w-6 text-center text-gray-500 dark:text-gray-400"></i><span id="menu_attendance_text">Attendance</span></a>
+                         <a href="#" onclick="showMainContent('settings'); toggleMenu();" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-cog w-6 text-center text-gray-500 dark:text-gray-400"></i><span id="menu_settings_text">Settings</span></a>
+                         <a href="#" onclick="showMainContent('offline'); toggleMenu();" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-download w-6 text-center text-gray-500 dark:text-gray-400"></i><span id="menu_offline_text">Offline Manager</span></a>
+                         <a href="#" onclick="startGuide('student'); toggleMenu();" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-question-circle w-6 text-center text-gray-500 dark:text-gray-400"></i><span id="menu_guide_text">Guide</span></a>
+                         <a href="#" onclick="showScreen('role')" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-sign-out-alt w-6 text-center text-gray-500 dark:text-gray-400"></i><span id="menu_logout_text">Log Out</span></a>
+                    </nav>
+                </div>
+            </div>
+
+            <main id="app-main-content" class="flex-1 overflow-y-auto p-4"></main>
+
+            <div id="confetti-container" class="absolute inset-0 pointer-events-none z-50"></div>
+            
+            <nav id="bottom-nav" class="flex-shrink-0 grid grid-cols-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                <button onclick="showMainContent('home')" class="nav-button flex flex-col items-center justify-center p-2 text-gray-500 dark:text-gray-400 active"><i class="fas fa-home text-xl mb-1"></i><span id="nav_home_text" class="text-xs font-semibold">Home</span></button>
+                <button onclick="showMainContent('learn')" id="nav-learn" class="nav-button flex flex-col items-center justify-center p-2 text-gray-500 dark:text-gray-400"><i class="fas fa-book text-xl mb-1"></i><span id="nav_learn_text" class="text-xs font-semibold">Learn</span></button>
+                <button onclick="showMainContent('practice')" id="nav-practice" class="nav-button flex flex-col items-center justify-center p-2 text-gray-500 dark:text-gray-400"><i class="fas fa-pencil-ruler text-xl mb-1"></i><span id="nav_practice_text" class="text-xs font-semibold">Practice</span></button>
+                <button onclick="showMainContent('rewards')" class="nav-button flex flex-col items-center justify-center p-2 text-gray-500 dark:text-gray-400"><i class="fas fa-star text-xl mb-1"></i><span id="nav_rewards_text" class="text-xs font-semibold">Rewards</span></button>
+            </nav>
+        </div>
+
+        <div id="chapter-list-screen" class="screen flex-1 flex-col overflow-hidden">
+             <header class="flex-shrink-0 flex items-center p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <button onclick="showScreen('main')" class="text-xl p-2"><i class="fas fa-arrow-left"></i></button>
+                <h1 id="chapter-list-title" class="text-xl font-bold font-baloo mx-auto">Subject</h1>
+                <div id="doubt-forum-button" class="w-10">
+                    <button onclick="showScreen('doubtForum')" class="text-xl p-2"><i class="fas fa-comments"></i></button>
+                </div>
+            </header>
+            <main id="chapter-list-content" class="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-900/50"></main>
+        </div>
+
+        <div id="lesson-screen" class="screen flex-1 flex-col overflow-hidden">
+            <header class="flex-shrink-0 p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center">
+                    <button onclick="showScreen('chapterList')" class="text-xl p-2 mr-2"><i class="fas fa-arrow-left"></i></button>
+                    <div>
+                        <h2 id="lesson-subject" class="text-xs font-semibold text-teal-600 dark:text-teal-400">Science</h2>
+                        <h1 id="lesson-title" class="text-xl font-bold font-baloo">Lesson Title</h1>
+                    </div>
+                </div>
+            </header>
+            <nav class="flex-shrink-0 flex justify-around bg-white dark:bg-gray-800 border-b dark:border-gray-700 shadow-sm"></nav>
+            <main class="flex-1 overflow-y-auto p-4">
+                <div id="lesson-content" class="lesson-tab-content"></div>
+                <div id="summary-content" class="lesson-tab-content hidden"></div>
+                <div id="quiz-content" class="lesson-tab-content hidden"></div>
+            </main>
+        </div>
+
+        <div id="whiteboard-screen" class="screen flex-1 flex-col overflow-hidden relative">
+            <header class="flex items-center justify-between p-2 bg-white dark:bg-gray-800 border-b dark:border-gray-700 z-10">
+                <h1 id="whiteboard_title_text" class="text-lg font-bold">Digital Whiteboard</h1>
+                <button onclick="showScreen('main'); showMainContent('practice');" class="bg-red-500 text-white font-bold py-1 px-3 rounded-md text-sm" id="whiteboard_close_button">Close</button>
+            </header>
+            <div class="flex-grow relative">
+                <canvas id="whiteboard-canvas" class="absolute top-0 left-0"></canvas>
+            </div>
+            <footer class="p-2 bg-white dark:bg-gray-800 border-t dark:border-gray-700 z-10 space-y-2">
+                <div class="flex justify-around items-center">
+                    <button onclick="setTool('pen')" class="wb-tool active-tool p-2 rounded-md"><i class="fas fa-pencil-alt"></i></button>
+                    <button onclick="setTool('eraser')" class="wb-tool p-2 rounded-md"><i class="fas fa-eraser"></i></button>
+                    <input type="color" id="pen-color-picker" onchange="setPenColor(this.value)" class="w-8 h-8 p-0 border-none rounded-full cursor-pointer" value="#000000">
+                    <button onclick="undoLast()" class="wb-tool p-2 rounded-md"><i class="fas fa-undo"></i></button>
+                    <button onclick="clearCanvas()" class="wb-tool p-2 rounded-md"><i class="fas fa-trash"></i></button>
+                    <button onclick="saveDrawing()" class="wb-tool p-2 rounded-md"><i class="fas fa-save"></i></button>
+                </div>
+                <div class="flex justify-center items-center space-x-2">
+                    <input type="range" min="2" max="50" value="5" id="pen-size-slider" oninput="setPenSize(this.value)" class="w-full">
+                </div>
+            </footer>
+        </div>
+
+        <div id="practice-test-screen" class="screen flex-1 flex-col overflow-hidden">
+             <header class="flex-shrink-0 flex items-center justify-between p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <button onclick="showScreen('main'); showMainContent('practice');" class="text-xl p-2"><i class="fas fa-arrow-left"></i></button>
+                <h1 id="practice-test-title" class="text-xl font-bold font-baloo">Practice Test</h1>
+                <button id="stop-test-btn" onclick="stopTestAndShowResults()" class="hidden bg-red-500 text-white font-semibold py-1 px-3 rounded-lg text-sm">Stop</button>
+            </header>
+            <main id="practice-test-content" class="flex-1 overflow-y-auto p-4"></main>
+        </div>
+
+        <div id="doubt-forum-screen" class="screen flex-1 flex-col overflow-hidden">
+            <header class="flex-shrink-0 flex items-center p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <button onclick="showScreen('chapterList')" class="text-xl p-2"><i class="fas fa-arrow-left"></i></button>
+                <h1 id="doubt-forum-title" class="text-xl font-bold font-baloo mx-auto">Doubt Forum</h1>
+                <div class="w-10"></div>
+            </header>
+            <main class="flex-1 overflow-y-auto p-4 space-y-3" id="doubt-list-container"></main>
+            <footer class="p-4 bg-white dark:bg-gray-800 border-t dark:border-gray-700">
+                <button onclick="toggleQuestionModal(true)" class="w-full bg-teal-500 text-white font-bold py-3 rounded-lg shadow-md" id="ask_question_button">Ask a New Question</button>
+            </footer>
+        </div>
+
+        <div id="showcase-screen" class="screen flex-1 flex-col overflow-hidden">
+            <header class="flex-shrink-0 flex items-center p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <button onclick="showScreen('main')" class="text-xl p-2"><i class="fas fa-arrow-left"></i></button>
+                <h1 id="showcase_title_text" class="text-xl font-bold font-baloo mx-auto">Community Showcase</h1>
+                <div class="w-10"></div>
+            </header>
+            <main class="flex-1 overflow-y-auto p-4">
+                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
+                     <h3 id="work_of_week_title_text" class="font-bold text-lg mb-3">🏆 Work of the Week</h3>
+                     <img src="https://via.placeholder.com/400x300.png/000000/FFFFFF?text=Diagram" alt="Drawing of a flower diagram" class="rounded-lg w-full">
+                     <p id="example_drawing_title_text" class="font-semibold mt-2">Diagram of a Flower</p>
+                     <p id="example_drawing_author_text" class="text-sm text-gray-500 dark:text-gray-400">by Priya, Class 6</p>
+                 </div>
+            </main>
+        </div>
+
+        <div id="teacher-dashboard-screen" class="screen flex-1 flex-col overflow-hidden">
+             <header class="flex-shrink-0 flex items-center justify-between p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <button onclick="toggleTeacherMenu()" class="text-xl p-2"><i class="fas fa-bars"></i></button>
+                <h1 id="teacher_dashboard_title" class="text-xl font-bold font-baloo">Teacher Dashboard</h1>
+                <div class="flex items-center space-x-3">
+                    <div class="text-xs text-green-600 dark:text-green-400 font-semibold flex items-center space-x-1"><i class="fas fa-wifi"></i><span id="teacher_sync_status_text">Synced</span></div>
+                </div>
+            </header>
+
+             <div id="teacher-menu-overlay" onclick="toggleTeacherMenu()" class="fixed inset-0 bg-black bg-opacity-50 z-40 opacity-0 pointer-events-none"></div>
+            <div id="teacher-side-menu" class="fixed top-0 left-0 w-64 h-full bg-white dark:bg-gray-800 shadow-lg z-50 transform -translate-x-full">
+                <div class="p-4">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <img src="./assets/avatar1.svg" class="w-12 h-12 rounded-full" alt="Teacher avatar">
+                        <div>
+                            <h3 class="font-bold">Mrs. Sharma</h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Teacher</p>
+                        </div>
+                    </div>
+                    <nav class="space-y-2">
+                        <a href="#" onclick="showTeacherContent('settings'); toggleTeacherMenu();" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-cog w-6 text-center text-gray-500 dark:text-gray-400"></i><span id="teacher_menu_settings_text">App Settings</span></a>
+                        <a href="#" onclick="startGuide('teacher'); toggleTeacherMenu();" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-question-circle w-6 text-center text-gray-500 dark:text-gray-400"></i><span id="teacher_menu_guide_text">Help & Guide</span></a>
+                        <a href="#" onclick="showScreen('role')" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"><i class="fas fa-sign-out-alt w-6 text-center text-gray-500 dark:text-gray-400"></i><span id="teacher_menu_logout_text">Log Out</span></a>
+                    </nav>
+                </div>
+            </div>
+            
+             <main id="teacher-main-content" class="flex-1 overflow-y-auto p-4"></main>
+
+            <div id="student-actions-dropdown" class="hidden absolute right-4 bg-white dark:bg-gray-700 rounded-lg shadow-xl z-20 w-40 text-sm">
+                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">View Progress</a>
+                <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">Send Message</a>
+                <a href="#" class="block px-4 py-2 text-red-500 hover:bg-gray-100 dark:hover:bg-gray-600">Remove Student</a>
+            </div>
+
+             <nav id="teacher-bottom-nav" class="flex-shrink-0 grid grid-cols-5 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+                <button onclick="showTeacherContent('progress')" class="nav-button flex flex-col items-center justify-center p-2 text-gray-500 dark:text-gray-400 active"><i class="fas fa-chart-line text-xl mb-1"></i><span class="teacher-nav-progress-text text-xs font-semibold">Progress</span></button>
+                <button onclick="toggleAddStudentModal(true)" class="nav-button flex flex-col items-center justify-center p-2 text-gray-500 dark:text-gray-400"><i class="fas fa-user-plus text-xl mb-1"></i><span class="teacher-nav-add-text text-xs font-semibold">Add</span></button>
+                <button onclick="showTeacherContent('uploads')" class="nav-button flex flex-col items-center justify-center p-2 text-gray-500 dark:text-gray-400"><i class="fas fa-upload text-xl mb-1"></i><span class="text-xs font-semibold">Uploads</span></button>
+                <button onclick="showTeacherContent('attendance')" class="nav-button flex flex-col items-center justify-center p-2 text-gray-500 dark:text-gray-400"><i class="fas fa-calendar-check text-xl mb-1"></i><span class="teacher-nav-attendance-text text-xs font-semibold">Attendance</span></button>
+                <button onclick="showTeacherContent('timetable')" class="nav-button flex flex-col items-center justify-center p-2 text-gray-500 dark:text-gray-400"><i class="fas fa-calendar-alt text-xl mb-1"></i><span class="teacher-nav-timetable-text text-xs font-semibold">Timetable</span></button>
+            </nav>
+        </div>
+        
+        <div id="student-details-screen" class="screen flex-1 flex-col overflow-hidden">
+            <header class="flex-shrink-0 flex items-center p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <button onclick="showScreen('teacherDashboard')" class="text-xl p-2"><i class="fas fa-arrow-left"></i></button>
+                <div class="text-center mx-auto">
+                    <img id="details-student-avatar" src="./assets/avatar1.svg" class="w-10 h-10 rounded-full mx-auto" alt="Student avatar">
+                    <h1 id="details-student-name" class="font-bold">Student Name</h1>
+                    <h2 id="details_student_subtitle" class="text-xs text-gray-500 dark:text-gray-400">Subject Progress</h2>
+                </div>
+                <div class="w-10"></div>
+            </header>
+            <main id="details-subject-list" class="flex-1 overflow-y-auto p-4 space-y-3"></main>
+        </div>
+        
+        <div id="add-student-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-sm p-6 space-y-4">
+                <h3 id="add_student_modal_title" class="text-xl font-bold text-center">Add New Student</h3>
+                <input id="new-student-name-input" type="text" placeholder="Student's Full Name" class="w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg">
+                <div>
+                    <h4 id="choose_avatar_title_text" class="text-sm font-semibold mb-2">Choose Avatar</h4>
+                    <div class="flex justify-around">
+                        <img src="./assets/avatar1.svg" onclick="selectNewStudentAvatar('avatar1', this)" class="new-avatar-option opacity-60 w-12 h-12 rounded-full cursor-pointer" alt="Avatar 1">
+                        <img src="./assets/avatar2.svg" onclick="selectNewStudentAvatar('avatar2', this)" class="new-avatar-option opacity-60 w-12 h-12 rounded-full cursor-pointer" alt="Avatar 2">
+                        <img src="./assets/avatar3.svg" onclick="selectNewStudentAvatar('avatar3', this)" class="new-avatar-option opacity-60 w-12 h-12 rounded-full cursor-pointer" alt="Avatar 3">
+                        <img src="./assets/avatar4.svg" onclick="selectNewStudentAvatar('avatar4', this)" class="new-avatar-option opacity-60 w-12 h-12 rounded-full cursor-pointer" alt="Avatar 4">
+                    </div>
+                </div>
+                <div class="flex space-x-3 pt-2">
+                    <button id="add_student_cancel_button" onclick="toggleAddStudentModal(false)" class="w-full py-2 bg-gray-200 dark:bg-gray-600 font-semibold rounded-lg">Cancel</button>
+                    <button id="add_student_add_button" onclick="addNewStudent()" class="w-full py-2 bg-teal-500 text-white font-semibold rounded-lg">Add Student</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="edit-timetable-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md max-h-[80vh] flex flex-col">
+                <h3 id="edit_timetable_modal_title" class="text-xl font-bold text-center p-4 border-b dark:border-gray-600">Edit Timetable</h3>
+                <div id="edit-timetable-form" class="p-4 overflow-y-auto"></div>
+                <div class="flex space-x-3 p-4 border-t dark:border-gray-600">
+                    <button id="modal_cancel_button" onclick="toggleEditTimetableModal(false)" class="w-full py-2 bg-gray-200 dark:bg-gray-600 font-semibold rounded-lg">Cancel</button>
+                    <button id="modal_save_button" onclick="saveTimetable()" class="w-full py-2 bg-blue-500 text-white font-semibold rounded-lg">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="ask-question-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-sm p-6 space-y-4">
+                <h3 id="ask_question_modal_title" class="text-xl font-bold text-center">Ask a New Question</h3>
+                <textarea id="question-textarea" rows="4" placeholder="Type your question here..." class="w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg"></textarea>
+                <div class="flex space-x-3 pt-2">
+                    <button id="ask_question_cancel_button" onclick="toggleQuestionModal(false)" class="w-full py-2 bg-gray-200 dark:bg-gray-600 font-semibold rounded-lg">Cancel</button>
+                    <button id="ask_question_submit_button" onclick="submitQuestion()" class="w-full py-2 bg-teal-500 text-white font-semibold rounded-lg">Submit</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="test-report-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md max-h-[90vh] flex flex-col">
+                <header class="p-4 border-b dark:border-gray-600">
+                    <h3 class="text-lg font-bold">Test Report</h3>
+                    <p id="report-subject" class="text-sm text-teal-600 dark:text-teal-400 font-semibold"></p>
+                    <p id="report-chapter" class="text-sm text-gray-500 dark:text-gray-400"></p>
+                </header>
+                <div class="p-4 grid grid-cols-3 gap-4 text-center">
+                    <div>
+                        <p class="text-2xl font-bold" id="report-score">8 / 10</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Score</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold" id="report-total-time">120s</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Total Time</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold" id="report-avg-time">12s</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Avg. Time</p>
+                    </div>
+                </div>
+                <div class="flex-1 p-4 space-y-2 overflow-y-auto border-t dark:border-gray-600">
+                     <h4 class="font-semibold mb-2">Question Breakdown</h4>
+                     <div id="report-breakdown-list" class="space-y-1.5"></div>
+                </div>
+                <footer class="p-4 border-t dark:border-gray-600">
+                    <button onclick="closeTestReportModal()" class="w-full py-2 bg-gray-600 text-white font-semibold rounded-lg">Close</button>
+                </footer>
+            </div>
+        </div>
+        
+        <div id="notes-viewer-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-3xl h-full flex flex-col">
+                <header class="flex justify-between items-center p-4 border-b dark:border-gray-600">
+                    <h3 id="notes-viewer-title" class="font-bold text-lg text-gray-800 dark:text-white truncate">Notes</h3>
+                    <button onclick="closeNotesViewer()" class="text-2xl font-bold text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400">&times;</button>
+                </header>
+                <iframe id="notes-viewer-iframe" class="w-full flex-grow"></iframe>
+            </div>
+        </div>
+
+        <div id="video-player-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4 fade-in">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl w-full max-w-3xl max-h-full flex flex-col slide-up">
+                <header class="flex justify-between items-center p-4 border-b dark:border-gray-600">
+                    <h3 id="video-player-title" class="font-bold text-lg text-gray-800 dark:text-white truncate">Video Lesson</h3>
+                    <button onclick="closeVideoPlayer()" class="text-2xl font-bold text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors">&times;</button>
+                </header>
+                <div class="p-2 md:p-4 flex-grow flex items-center justify-center bg-black">
+                    <video id="video-player-element" class="w-full max-h-[75vh]" controls autoplay>
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </div>
+
+        <div id="guide-overlay" class="hidden fixed inset-0 z-50">
+            <div id="guide-tooltip" class="guide-tooltip bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-4 rounded-lg shadow-2xl w-64">
+                <p id="guide-text" class="text-sm mb-4">This is a guide step!</p>
+                <div class="flex justify-between">
+                    <button id="guide_skip_button" onclick="endGuide()" class="text-xs text-gray-500 dark:text-gray-400">Skip Tour</button>
+                    <button id="guide_next_button" onclick="nextGuideStep()" class="text-sm font-bold bg-teal-500 text-white py-1 px-3 rounded-md">Next</button>
+                </div>
+            </div>
+        </div>
+
+    </div> <script src="./firebase-config.js"></script>
+    <script src="main.js" type="module"></script>
+    
+</body>
+</html>
