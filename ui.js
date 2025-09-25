@@ -26,7 +26,7 @@ export const screens = {
     studentDetails: document.getElementById('student-details-screen'),
     studentSignup: document.getElementById('student-signup-screen'),
     teacherSignup: document.getElementById('teacher-signup-screen'),
-    sync: document.getElementById('sync-screen') // <-- THIS WAS THE MISSING LINE
+    sync: document.getElementById('sync-screen')
 };
 const mainContentContainer = document.getElementById('app-main-content');
 const sideMenu = document.getElementById('side-menu');
@@ -35,6 +35,25 @@ const teacherSideMenu = document.getElementById('teacher-side-menu');
 const teacherMenuOverlay = document.getElementById('teacher-menu-overlay');
 const htmlEl = document.documentElement;
 const celebrationColors = ['#0D9488', '#10B981', '#EF4444', '#F59E0B', '#3B82F6'];
+
+/**
+ * (Frontend-only) Fetches rewards data for a student from local storage.
+ * @param {string} studentId The ID of the student.
+ * @returns {object} An object with totalPoints and badges.
+ */
+function getStudentRewards(studentId) {
+    if (!studentId) return { totalPoints: 0, badges: [] };
+
+    const rewardsKey = `naviKalamRewards_${studentId}`;
+    const rewardsData = JSON.parse(localStorage.getItem(rewardsKey));
+
+    if (rewardsData) {
+        return rewardsData;
+    } else {
+        // Return a default structure if no rewards data exists yet
+        return { totalPoints: 0, badges: [] };
+    }
+}
 
 export function showScreen(screenId) {
     if (state.unsubscribeDoubtListener) {
@@ -176,9 +195,59 @@ export function showMainContent(contentId) {
         </div>
         `;
     } else if (contentId === 'rewards') {
-        const leaderboard = [{rank:1,name:'Rohan',pts:1350, avatar:2}, {rank:2,name:'Vaibhav',pts:1250, avatar:1}, {rank:3,name:'Priya',pts:1100, avatar:3}];
-        const badges = [{nameKey: "badge_science_whiz", icon:"fa-flask", color:"blue"}, {nameKey: "badge_perfect_week", icon:"fa-calendar-check", color:"green"}, {nameKey: "badge_quick_learner", icon:"fa-bolt", color:"yellow"}];
-        content = `<div class="slide-up text-center bg-gradient-to-br from-amber-400 to-orange-500 text-white p-6 rounded-2xl shadow-md"><i class="fas fa-star text-5xl"></i><h2 class="text-4xl font-extrabold mt-2">1,250</h2><p class="opacity-80">${t('total_points')}</p></div><div class="slide-up mt-6" style="animation-delay: 100ms;"><h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">${t('your_achievements')}</h3><div class="grid grid-cols-3 gap-4 text-center">${badges.map(b => `<div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md"><div class="bg-${b.color}-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto"><i class="fas ${b.icon} text-3xl text-${b.color}-500"></i></div><p class="text-xs font-semibold mt-2 text-gray-700 dark:text-gray-300">${t(b.nameKey)}</p></div>`).join('')}</div></div><div class="slide-up mt-6" style="animation-delay: 200ms;"><h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">${t('class_rank')}</h3><div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md space-y-3">${leaderboard.map(p => `<div class="flex items-center ${p.name===state.currentUser.name ? 'bg-teal-50 dark:bg-teal-900/50 p-2 rounded-lg':''}"><span class="font-bold text-lg w-8">${p.rank}.</span><img src="./assets/avatar${p.avatar}.svg" class="w-8 h-8 rounded-full mr-3" alt="avatar"><span class="text-gray-800 dark:text-white flex-1">${p.name}</span><span class="font-bold text-amber-500">${p.pts} pts</span></div>`).join('')}</div></div>`;
+        const rewardsData = getStudentRewards(state.currentUser.id);
+        const totalPoints = rewardsData.totalPoints;
+        const earnedBadges = rewardsData.badges || [];
+
+        const leaderboard = [
+            {rank: 1, name: 'Rohan', pts: 1350, avatar: 2}, 
+            {rank: 2, name: 'Priya', pts: 1100, avatar: 3},
+            {rank: 3, name: state.currentUser.name, pts: totalPoints, avatar: state.currentUser.avatar.replace('avatar', '')}
+        ].sort((a, b) => b.pts - a.pts);
+
+        leaderboard.forEach((player, index) => player.rank = index + 1);
+        
+        const badges = [
+            { nameKey: "badge_science_whiz", icon: "fa-flask", color: "blue" },
+            { nameKey: "badge_perfect_week", icon: "fa-calendar-check", color: "green" },
+            { nameKey: "badge_quick_learner", icon: "fa-bolt", color: "yellow" }
+        ];
+
+        content = `
+            <div class="slide-up text-center bg-gradient-to-br from-amber-400 to-orange-500 text-white p-6 rounded-2xl shadow-md">
+                <i class="fas fa-star text-5xl"></i>
+                <h2 class="text-4xl font-extrabold mt-2">${totalPoints}</h2>
+                <p class="opacity-80">${t('total_points')}</p>
+            </div>
+            <div class="slide-up mt-6" style="animation-delay: 100ms;">
+                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">${t('your_achievements')}</h3>
+                <div class="grid grid-cols-3 gap-4 text-center">
+                    ${badges.map(b => {
+                        const hasBadge = earnedBadges.includes(b.nameKey);
+                        return `
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md ${hasBadge ? '' : 'opacity-40'}">
+                                <div class="bg-${b.color}-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto">
+                                    <i class="fas ${b.icon} text-3xl text-${b.color}-500"></i>
+                                </div>
+                                <p class="text-xs font-semibold mt-2 text-gray-700 dark:text-gray-300">${t(b.nameKey)}</p>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+            <div class="slide-up mt-6" style="animation-delay: 200ms;">
+                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">${t('class_rank')}</h3>
+                <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md space-y-3">
+                    ${leaderboard.map(p => `
+                        <div class="flex items-center ${p.name===state.currentUser.name ? 'bg-teal-50 dark:bg-teal-900/50 p-2 rounded-lg':''}">
+                            <span class="font-bold text-lg w-8">${p.rank}.</span>
+                            <img src="./assets/avatar${p.avatar}.svg" class="w-8 h-8 rounded-full mr-3" alt="avatar">
+                            <span class="text-gray-800 dark:text-white flex-1">${p.name}</span>
+                            <span class="font-bold text-amber-500">${p.pts} pts</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>`;
     } else if (contentId === 'profile') {
         content = `<div id="profile-screen-container" class="slide-up flex flex-col items-center text-center bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md"><img id="profile-avatar-display" src="./assets/${state.currentUser.avatar}.svg" class="w-24 h-24 rounded-full mb-4 border-4 border-white dark:border-gray-700 shadow-lg" alt="Current user avatar"><h2 class="text-2xl font-bold text-gray-800 dark:text-white">${state.currentUser.name}</h2><p class="text-gray-500 dark:text-gray-400">${t('class_8')}</p></div><div class="slide-up mt-4" style="animation-delay: 100ms;"><h3 class="text-lg font-bold text-gray-800 dark:text-white mb-2">${t('choose_avatar_title')}</h3><div class="grid grid-cols-4 gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">${[1,2,3,4].map(i => `<img src="./assets/avatar${i}.svg" onclick="selectAvatar('avatar${i}')" class="avatar-option w-12 h-12 rounded-full cursor-pointer transition-all duration-200 ${state.currentUser.avatar===`avatar${i}` ? 'ring-4 ring-teal-500' : 'opacity-60 hover:opacity-100'}" id="avatar${i}-selector" alt="Avatar option ${i}">`).join('')}</div></div>`;
     } else if (contentId === 'settings') {
@@ -509,7 +578,8 @@ export function showInbuiltContent(contentType) {
                     </div>
                 </div>
             `).join('')}</div>
-        </div>`;
+        </div>
+    `;
     mainContentContainer.innerHTML = content;
 }
 

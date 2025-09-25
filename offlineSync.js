@@ -35,18 +35,48 @@ function setQRCode(dataString) {
         setStatus("Error: Could not generate QR code.");
     }
 }
+
+/**
+ * UPDATED: Asks for camera permission and robustly selects a camera.
+ * @param {function} onSuccess - Callback function to handle successful scan.
+ */
 function startScanner(onSuccess) {
-    qrScanner = new Html5Qrcode("qr-scanner");
-    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-    showScanner(true);
-    // CORRECTED CODE
-qrScanner.start({ }, config, onSuccess, (errorMessage) => {
-        // handle scan failure, usually ignore
-    }).catch((err) => {
-        console.error("QR Scanner Error:", err);
-        setStatus("Error: Could not start camera.");
+    // The getCameras() method will trigger the permission prompt if needed.
+    Html5Qrcode.getCameras().then(cameras => {
+        if (cameras && cameras.length) {
+            // --- Camera found, proceed to start scanner ---
+            qrScanner = new Html5Qrcode("qr-scanner");
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            showScanner(true);
+
+            // Use the last camera in the list which is often the rear camera on mobile devices.
+            // This will still work on laptops as it will just be the only camera available.
+            const cameraId = cameras[cameras.length - 1].id;
+
+            qrScanner.start(
+                cameraId,
+                config,
+                onSuccess,
+                (errorMessage) => { /* ignore scan errors */ }
+            ).catch((err) => {
+                console.error("QR Scanner Start Error:", err);
+                setStatus("Error: Could not start camera.");
+                showScanner(false);
+            });
+        } else {
+            // --- No cameras found ---
+            console.error("No cameras found on this device.");
+            setStatus("Error: No cameras found on this device.");
+        }
+    }).catch(err => {
+        // --- Error getting cameras, most likely a permission issue ---
+        console.error("Camera permission denied or error:", err);
+        setStatus("Camera permission is required for QR code scanning.");
+        showScanner(false);
+        showInitialButtons(true); // Allow user to try again
     });
 }
+
 function stopScanner() {
     if (qrScanner && qrScanner.isScanning) {
         qrScanner.stop().then(() => {
@@ -66,11 +96,8 @@ export async function startHostSession() {
 
     pc = new RTCPeerConnection(configuration);
 
-    // This is where you would handle ICE candidates if needed for more complex networks.
-    // For this simple case, we'll wait for them to be gathered automatically.
     pc.onicecandidate = (event) => {
         if (event.candidate === null) {
-            // All candidates gathered, update QR with the full offer.
             const offerString = JSON.stringify(pc.localDescription);
             setQRCode(offerString);
             setStatus("Student: Scan this QR code.");
@@ -112,7 +139,6 @@ export function joinSession() {
             }
         };
         
-        // Student listens for the data channel from the teacher
         pc.ondatachannel = (event) => {
             dataChannel = event.channel;
             setupDataChannelEvents();
@@ -157,7 +183,6 @@ function setupDataChannelEvents() {
     dataChannel.onopen = () => {
         setStatus("✅ Connected!");
         showQRDisplay(false);
-        // Teacher can send initial data
         if (pc.localDescription.type === 'offer') {
             dataChannel.send(JSON.stringify({ type: 'message', content: 'Hello from the teacher!' }));
         }
@@ -166,7 +191,6 @@ function setupDataChannelEvents() {
     dataChannel.onmessage = (event) => {
         const data = JSON.parse(event.data);
         console.log("Received message:", data);
-        // Example of handling a received message
         alert(`Received message: ${data.content}`);
     };
 
@@ -180,3 +204,5 @@ function setupDataChannelEvents() {
         setStatus("Connection error.");
     };
 }
+
+

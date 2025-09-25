@@ -215,7 +215,7 @@ async function renderStudentList() {
 }
 
 /**
- * UPDATED: Fetches test history for a student from Firestore.
+ * FIXED: This function now fetches test history for a student from Firestore.
  */
 export async function showStudentDetails(studentId) {
     const student = studentCache.find(s => s.id === studentId);
@@ -226,12 +226,10 @@ export async function showStudentDetails(studentId) {
 
     document.getElementById('details-student-avatar').src = `./assets/${student.avatar}.svg`;
     document.getElementById('details-student-name').innerText = student.name;
-
     const subjectListContainer = document.getElementById('details-subject-list');
     
-    // This part for progress bars remains the same for now
     const subjectProgressHtml = subjects.map(subjectInfo => {
-        const progress = student.progress ? student.progress[subjectInfo.name.english] || 0 : 0;
+        const progress = student.progress ? (student.progress[subjectInfo.name.english] || 0) : 0;
         return `
             <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm">
                 <div class="flex items-center space-x-3">
@@ -265,7 +263,7 @@ export async function showStudentDetails(studentId) {
         querySnapshot.forEach((doc) => {
             history.push({ id: doc.id, ...doc.data() });
         });
-        currentStudentTestHistory = history; // Cache the fetched history
+        currentStudentTestHistory = history; // Cache the fetched history for this student
     } catch (error) {
         console.error("Error fetching test history: ", error);
         historyHtml += `<p class="text-red-500">Could not load test history.</p>`;

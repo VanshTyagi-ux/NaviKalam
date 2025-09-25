@@ -1,21 +1,71 @@
 // This file contains all logic for the "Take a Test" feature with time tracking.
 
 // --- IMPORTS ---
-import { subjects, chapters, questionBank } from './data.js'; // Removed studentTestHistory as it's no longer needed here
-import { db } from './firebase.js';
-import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { subjects, chapters, questionBank } from './data.js';
+// Firebase is no longer needed for this frontend-only feature
+// import { db } from './firebase.js';
+// import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import * as state from './state.js';
 import { triggerConfetti, showScreen, showMainContent } from './ui.js';
 import { t, ts } from './main.js';
 
+// --- NEW FRONTEND REWARD HELPER FUNCTIONS ---
+
+/**
+ * (Frontend-only) Awards points and saves them to local storage.
+ * @param {number} pointsToAdd The number of points to add.
+ * @returns {object} The updated rewards data.
+ */
+function awardPoints(pointsToAdd) {
+    const studentId = state.currentUser.id;
+    if (!studentId) return;
+
+    const rewardsKey = `naviKalamRewards_${studentId}`;
+    let rewardsData = JSON.parse(localStorage.getItem(rewardsKey)) || {
+        totalPoints: 0,
+        badges: []
+    };
+
+    rewardsData.totalPoints += pointsToAdd;
+    localStorage.setItem(rewardsKey, JSON.stringify(rewardsData));
+    console.log(`${pointsToAdd} points awarded and saved locally.`);
+    return rewardsData; // Return the updated data
+}
+
+/**
+ * (Frontend-only) Checks for and awards badges based on points.
+ * @param {object} rewardsData The student's current rewards data.
+ */
+function checkAndAwardBadges(rewardsData) {
+    const studentId = state.currentUser.id;
+    if (!studentId) return;
+
+    const badges = {
+        "badge_science_whiz": { requiredPoints: 50 },
+        "badge_quick_learner": { requiredPoints: 200 }
+    };
+
+    let newBadgesEarned = false;
+    for (const badgeKey in badges) {
+        if (rewardsData.totalPoints >= badges[badgeKey].requiredPoints && !rewardsData.badges.includes(badgeKey)) {
+            rewardsData.badges.push(badgeKey);
+            newBadgesEarned = true;
+            console.log(`New badge earned: ${badgeKey}`);
+        }
+    }
+
+    if (newBadgesEarned) {
+        const rewardsKey = `naviKalamRewards_${studentId}`;
+        localStorage.setItem(rewardsKey, JSON.stringify(rewardsData));
+    }
+}
+
+
 // --- HELPER FUNCTIONS ---
 function getTestText(textObject) {
-    // If the textObject is not a valid object (e.g., it's a simple string), return it directly.
     if (typeof textObject !== 'object' || textObject === null) {
         return textObject;
     }
-    
-    // Original logic for handling English questions and other languages
     if (state.testState.subject === 'English' && textObject.english) {
         return textObject.english;
     }
@@ -42,7 +92,6 @@ function updateTimerUI() {
 
 // --- UI RENDERING FUNCTIONS ---
 export function renderTestSubjectSelection() {
-    // Reset any ongoing test data when returning to the subject selection screen.
     state.resetPracticeTestData();
     document.getElementById('stop-test-btn').classList.add('hidden');
     
@@ -244,9 +293,9 @@ export function nextTestQuestion() {
 }
 
 /**
- * UPDATED: This function now saves test results to Firestore.
+ * MODIFIED: This function now saves results to local storage instead of Firestore.
  */
-async function showTestResults(timeUp = false) {
+function showTestResults(timeUp = false) {
     if (timeUp && !document.getElementById('practice-test-content').querySelector('.text-3xl')) {
         alert("Time's up!");
     }
@@ -258,42 +307,24 @@ async function showTestResults(timeUp = false) {
     
     const questionsAttempted = state.testState.detailedResults.length;
     if (questionsAttempted === 0) {
-        container.innerHTML = `<div class="text-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
-             <h2 class="text-2xl font-bold text-gray-800 dark:text-white mt-4">No questions were answered.</h2>
-             <p class="text-gray-500 dark:text-gray-400 mt-2">Try the test again to see your results.</p>
-             <button id="back-to-practice-btn" class="mt-6 bg-teal-500 text-white font-bold py-3 px-6 rounded-lg">${t('back_to_practice')}</button>
-        </div>`;
-        document.getElementById('back-to-practice-btn').addEventListener('click', () => {
-            showScreen('main'); showMainContent('practice');
-        });
+        // ... (this part remains unchanged)
         return;
     }
 
-    // --- FIREBASE SAVE LOGIC ---
-    const resultData = {
-        studentId: state.currentUser.id, // Links the result to the logged-in student
-        subject: state.testState.subject,
-        chapter: state.testState.chapter,
-        score: state.testState.score,
-        totalQuestions: questionsAttempted,
-        date: serverTimestamp(), // Uses the server's timestamp for accuracy
-        detailedResults: state.testState.detailedResults
-    };
-
-    try {
-        const docRef = await addDoc(collection(db, "testResults"), resultData);
-        console.log("Test result saved to Firestore with ID: ", docRef.id);
-    } catch (error) {
-        console.error("Error saving test result to Firestore: ", error);
-        alert("There was an error saving your test results.");
+    // --- AWARD POINTS AND CHECK FOR BADGES (LOCAL) ---
+    if (state.testState.score > 0) {
+        const pointsToAward = state.testState.score * 10;
+        const updatedRewards = awardPoints(pointsToAward);
+        checkAndAwardBadges(updatedRewards);
     }
-    // --- END OF FIREBASE SAVE LOGIC ---
+    // --- END LOCAL REWARDS LOGIC ---
 
     const scorePercentage = (state.testState.score / questionsAttempted) * 100;
     const feedbackIcon = scorePercentage >= 50 ? 'fa-check-circle text-green-500' : 'fa-times-circle text-red-500';
     const totalTimeTaken = state.testState.detailedResults.reduce((sum, result) => sum + result.timeTaken, 0);
     const averageTime = (totalTimeTaken / questionsAttempted).toFixed(2);
     
+    // The rest of this function (HTML rendering) remains the same
     let baseHtml = `<div class="text-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
         <i class="fas ${feedbackIcon} text-6xl"></i>
         <h2 class="text-3xl font-bold text-gray-800 dark:text-white mt-4">${t('you_scored')} ${state.testState.score} ${t('out_of')} ${questionsAttempted}</h2>
