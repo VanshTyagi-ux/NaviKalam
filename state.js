@@ -1,5 +1,5 @@
 // This file holds the shared, mutable state for the entire application.
-
+export let avatarUris = {};
 export let currentUser = { id: 99, name: "Student", avatar: "avatar1" };
 export let currentLanguage = 'english';
 export let currentMainContent = 'home';

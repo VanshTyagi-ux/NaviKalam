@@ -1,11 +1,17 @@
 // This file handles the WebRTC offline P2P connection logic.
+import * as state from './state.js';
 
 let pc; // The RTCPeerConnection object
 let dataChannel;
 let qrScanner;
 
 // For a purely local network, we don't need STUN servers.
-const configuration = { iceServers: [] };
+// Use Google's public STUN server to help devices find each other.
+const configuration = { 
+    iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' }
+    ] 
+};
 
 // --- UI Helper Functions ---
 function showInitialButtons(show) {
@@ -51,8 +57,22 @@ function startScanner(onSuccess) {
     Html5Qrcode.getCameras().then(cameras => {
         if (cameras && cameras.length) {
             // --- Camera found, proceed to start scanner ---
-            qrScanner = new Html5Qrcode("qr-scanner");
-            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+            // Pass a config to enable the faster, native BarcodeDetector if available.
+qrScanner = new Html5Qrcode("qr-scanner", {
+    useBarCodeDetectorIfSupported: true,
+    verbose: false // Set to true for more logs
+});
+
+            const config = {
+    fps: 10,
+    qrbox: { width: 250, height: 250 },
+    // Add this to request a smaller video stream.
+    videoConstraints: {
+        width: { ideal: 640 },
+        height: { ideal: 480 }
+    }
+};
+
             showScanner(true);
 
             // Use the last camera in the list which is often the rear camera on mobile devices.
@@ -79,7 +99,7 @@ function startScanner(onSuccess) {
         console.error("Camera permission denied or error:", err);
         
         // Provide more specific feedback based on the error type
-        if (err.name === 'NotAllowedError') {
+        if (errconst.name === 'NotAllowedError') {
             setStatus("Camera permission was denied. You must allow camera access in your browser settings.");
         } else if (err.name === 'NotFoundError') {
              setStatus("Error: No camera was found on this device.");
@@ -111,6 +131,15 @@ export async function startHostSession() {
     setStatus("Generating session code...");
 
     pc = new RTCPeerConnection(configuration);
+
+    // -- ADD THIS FOR DEBUGGING --
+    pc.oniceconnectionstatechange = (event) => {
+        console.log(`ICE Connection State: ${pc.iceConnectionState}`);
+        if (pc.iceConnectionState === 'failed') {
+            setStatus("Error: Connection failed. Check console for details.");
+        }
+    };
+    // ----------------------------
 
     pc.onicecandidate = (event) => {
         if (event.candidate === null) {
@@ -146,6 +175,15 @@ export function joinSession() {
         
         const offer = JSON.parse(decodedText);
         pc = new RTCPeerConnection(configuration);
+
+        // -- ADD THIS FOR DEBUGGING --
+    pc.oniceconnectionstatechange = (event) => {
+        console.log(`ICE Connection State: ${pc.iceConnectionState}`);
+        if (pc.iceConnectionState === 'failed') {
+            setStatus("Error: Connection failed. Check console for details.");
+        }
+    };
+    // ----------------------------
 
         pc.onicecandidate = (event) => {
             if (event.candidate === null) {
@@ -221,4 +259,52 @@ function setupDataChannelEvents() {
     };
 }
 
+// In offlineSync.js
 
+// ... (keep all your existing code)
+
+/**
+ * Resets the entire sync screen UI and state.
+ * This should be called whenever the user navigates to this screen.
+ */
+export function resetSyncScreen() {
+    // 1. Stop any active QR code scanner
+    stopScanner();
+
+    // 2. Close any existing WebRTC connection
+    if (pc) {
+        pc.onicecandidate = null;
+        pc.ondatachannel = null;
+        pc.oniceconnectionstatechange = null;
+        pc.close();
+        pc = null;
+    }
+    dataChannel = null;
+
+    // 3. Reset the UI elements to their initial state
+    setStatus("Ready to connect...");
+    showQRDisplay(false);
+    document.getElementById('qr-display').innerHTML = '';
+    showScanner(false);
+    showTeacherScanButton(false);
+    document.getElementById('teacher-sync-content-div').style.display = 'none';
+
+    // 4. Dynamically create the correct button based on user role
+    const initialButtonsDiv = document.getElementById('initial-buttons');
+    
+    // Check the role from the shared state
+    if (state.currentUser && state.currentUser.role === 'teacher') {
+        initialButtonsDiv.innerHTML = `
+            <button onclick="startHostSession()" class="w-full bg-teal-500 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-teal-600">
+                Connect With Student
+            </button>
+        `;
+    } else { // Default to the student view
+        initialButtonsDiv.innerHTML = `
+            <button onclick="joinSession()" class="w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:bg-blue-600">
+                Connect With Student 
+            </button>
+        `;
+    }
+    showInitialButtons(true);
+}

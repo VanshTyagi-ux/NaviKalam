@@ -7,6 +7,23 @@ import { loadDoubtForum } from './firebase.js';
 import { initCanvas } from './whiteboard.js';
 import { renderTestSubjectSelection } from './practiceTest.js';
 import { renderTimetableForStudent } from './teacher.js';
+import { showTeacherContent } from './teacher.js';
+import { resetSyncScreen } from './offlineSync.js';
+
+export function getAvatarUri(avatarId) {
+    return state.avatarUris[avatarId] || ''; // Fallback to empty string
+}
+
+
+export function navigateBackToDashboard() {
+    if (state.currentUser && state.currentUser.role === 'teacher') {
+        showScreen('teacherDashboard');
+        showTeacherContent('progress'); // 'progress' is the default view for teachers
+    } else {
+        showScreen('main'); // 'main' is the student dashboard ID
+        showMainContent('home');
+    }
+}
 
 // --- DOM ELEMENT REFERENCES ---
 export const screens = {
@@ -60,6 +77,12 @@ export function showScreen(screenId) {
         state.unsubscribeDoubtListener();
         state.setUnsubscribeDoubtListener(null);
     }
+    
+    // 2. Add the call to the reset function here
+    if (screenId === 'sync') {
+        resetSyncScreen();
+    }
+    
     Object.values(screens).forEach(screen => {
         if (screen) screen.classList.remove('active');
     });
@@ -161,9 +184,11 @@ export function updateStaticUIText() {
     setText('teacher_menu_logout_text', 'log_out');
 }
 
+// In ui.js, replace the entire showMainContent function with this:
+
 export function showMainContent(contentId) {
     state.setCurrentMainContent(contentId);
-    let content = '';
+    let content = ''; // This line is crucial and likely what's missing.
     document.querySelectorAll('#bottom-nav .nav-button').forEach(btn => {
         btn.classList.remove('active');
         btn.classList.add('text-gray-500', 'dark:text-gray-400');
@@ -178,6 +203,16 @@ export function showMainContent(contentId) {
         content = `
             <div class="slide-up" style="animation-delay: 100ms;"><h3 class="text-xl font-bold text-gray-800 dark:text-white mb-3">${t('todays_focus')}</h3><div class="flex overflow-x-auto space-x-4 pb-4 hide-scrollbar"><div class="flex-shrink-0 w-52 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md"><div class="flex items-center"><i class="fas fa-check-circle text-green-500 text-xl mr-3"></i><div><p class="font-semibold text-gray-800 dark:text-white">${t('complete_1_quiz')}</p><p class="text-xs text-gray-500 dark:text-gray-400">${t('10_points')}</p></div></div></div><div class="flex-shrink-0 w-52 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md"><div class="flex items-center"><i class="far fa-circle text-gray-400 text-xl mr-3"></i><div><p class="font-semibold text-gray-800 dark:text-white">${t('learn_15_mins')}</p><p class="text-xs text-gray-500 dark:text-gray-400">${t('20_points')}</p></div></div></div></div></div>
             <div onclick="showScreen('showcase')" class="slide-up mt-4 bg-gradient-to-r from-amber-400 to-orange-500 text-white p-4 rounded-xl shadow-md flex items-center justify-between cursor-pointer transition-transform duration-200 hover:scale-105"><div class="flex items-center"><i class="fas fa-star text-2xl mr-3"></i><div><p class="font-bold">${t('community_showcase')}</p><p class="text-xs">${t('work_of_the_week')}</p></div></div><i class="fas fa-chevron-right"></i></div>
+            <div onclick="showScreen('sync')" class="slide-up mt-4 bg-gradient-to-r from-cyan-400 to-blue-500 text-white p-4 rounded-xl shadow-md flex items-center justify-between cursor-pointer transition-transform duration-200 hover:scale-105">
+                <div class="flex items-center">
+                    <i class="fas fa-wifi text-2xl mr-3"></i>
+                    <div>
+                        <p class="font-bold">${t('offline_sync_title')}</p>
+                        <p class="text-xs">${t('offline_sync_subtitle')}</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right"></i>
+            </div>
             <div class="slide-up mt-6" style="animation-delay: 200ms;"><h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">${t('your_subjects')}</h3>
             <div id="subject-cards" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">${subjects.map(s => `<div onclick="showChapterList('${s.name.english}')" class="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-md cursor-pointer transform hover:-translate-y-1 transition-transform duration-200"><div class="flex items-center justify-between mb-3"><div class="bg-${s.color}-100 dark:bg-${s.color}-900/50 w-12 h-12 rounded-full flex items-center justify-center"><i class="fas ${s.icon} text-2xl text-${s.color}-500"></i></div><span class="font-bold text-gray-700 dark:text-gray-300">${s.progress}%</span></div><h4 class="font-bold text-lg text-gray-800 dark:text-white">${ts(s.name)}</h4><div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5 mt-2"><div class="bg-${s.color}-500 h-1.5 rounded-full" style="width: ${s.progress}%"></div></div></div>`).join('')}</div></div>`;
     } else if (contentId === 'learn') {
@@ -241,7 +276,7 @@ export function showMainContent(contentId) {
                     ${leaderboard.map(p => `
                         <div class="flex items-center ${p.name===state.currentUser.name ? 'bg-teal-50 dark:bg-teal-900/50 p-2 rounded-lg':''}">
                             <span class="font-bold text-lg w-8">${p.rank}.</span>
-                            <img src="./assets/avatar${p.avatar}.svg" class="w-8 h-8 rounded-full mr-3" alt="avatar">
+                            <img src="${getAvatarUri('avatar' + p.avatar)}" class="w-8 h-8 rounded-full mr-3" alt="avatar">
                             <span class="text-gray-800 dark:text-white flex-1">${p.name}</span>
                             <span class="font-bold text-amber-500">${p.pts} pts</span>
                         </div>
@@ -249,8 +284,18 @@ export function showMainContent(contentId) {
                 </div>
             </div>`;
     } else if (contentId === 'profile') {
-        content = `<div id="profile-screen-container" class="slide-up flex flex-col items-center text-center bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md"><img id="profile-avatar-display" src="./assets/${state.currentUser.avatar}.svg" class="w-24 h-24 rounded-full mb-4 border-4 border-white dark:border-gray-700 shadow-lg" alt="Current user avatar"><h2 class="text-2xl font-bold text-gray-800 dark:text-white">${state.currentUser.name}</h2><p class="text-gray-500 dark:text-gray-400">${t('class_8')}</p></div><div class="slide-up mt-4" style="animation-delay: 100ms;"><h3 class="text-lg font-bold text-gray-800 dark:text-white mb-2">${t('choose_avatar_title')}</h3><div class="grid grid-cols-4 gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">${[1,2,3,4].map(i => `<img src="./assets/avatar${i}.svg" onclick="selectAvatar('avatar${i}')" class="avatar-option w-12 h-12 rounded-full cursor-pointer transition-all duration-200 ${state.currentUser.avatar===`avatar${i}` ? 'ring-4 ring-teal-500' : 'opacity-60 hover:opacity-100'}" id="avatar${i}-selector" alt="Avatar option ${i}">`).join('')}</div></div>`;
-    } else if (contentId === 'settings') {
+        content = `<div id="profile-screen-container" class="slide-up ...">...</div>
+        <div class="slide-up mt-4" style="animation-delay: 100ms;">
+            <h3 class="text-lg font-bold ...">${t('choose_avatar_title')}</h3>
+            <div class="grid grid-cols-4 gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
+                
+                ${[1,2,3,4,5,6,7,8].map(i => 
+                    `<img src="${getAvatarUri('avatar' + i)}" onclick="selectAvatar('avatar${i}')" class="avatar-option w-12 h-12 rounded-full cursor-pointer transition-all duration-200 ${state.currentUser.avatar===`avatar${i}` ? 'ring-4 ring-teal-500' : 'opacity-60 hover:opacity-100'}" id="avatar${i}-selector" alt="Avatar option ${i}">`
+                ).join('')}
+            
+            </div>
+        </div>`;
+            } else if (contentId === 'settings') {
         content = `<h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-4 font-baloo">${t('settings')}</h3>
         <div class="slide-up bg-white dark:bg-gray-800 p-2 rounded-xl shadow-sm space-y-2">
             <div class="flex justify-between items-center p-2">
@@ -507,10 +552,19 @@ export function toggleViewMode() {
     }
 }
 
+// Replace the existing createAvatarAssets function with this one
 export function createAvatarAssets() {
     document.querySelectorAll('#avatar-assets svg').forEach(svg => {
-        const url = URL.createObjectURL(new Blob([svg.outerHTML], {type: 'image/svg+xml'}));
-        document.querySelectorAll(`img[src='./assets/${svg.id}.svg']`).forEach(img => img.src = url);
+        const encodedSvg = encodeURIComponent(svg.outerHTML);
+        const dataUri = `data:image/svg+xml;utf8,${encodedSvg}`;
+        
+        // Populate the central store in state.js
+        state.avatarUris[svg.id] = dataUri;
+
+        // Fix images that are already in the DOM on page load
+        document.querySelectorAll(`img[src='./assets/${svg.id}.svg']`).forEach(img => {
+            img.src = dataUri;
+        });
     });
 }
 
@@ -529,7 +583,7 @@ export function selectAvatar(avatarId) {
     document.querySelectorAll('.avatar-option').forEach(el => { el.classList.remove('ring-4', 'ring-teal-500'); el.classList.add('opacity-60'); });
     document.getElementById(`${avatarId}-selector`).classList.add('ring-4', 'ring-teal-500');
     document.getElementById(`${avatarId}-selector`).classList.remove('opacity-60');
-    const newSrc = `./assets/${avatarId}.svg`;
+    const newSrc = getAvatarUri(avatarId);
     document.getElementById('profile-avatar-display').src = newSrc;
     document.getElementById('menu-avatar').src = newSrc;
 }

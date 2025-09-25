@@ -168,6 +168,7 @@ async function signUp(role) {
 
 // --- GLOBAL FUNCTION ASSIGNMENTS ---
 // Makes functions accessible from the HTML onclick attributes.
+window.navigateBackToDashboard = ui.navigateBackToDashboard;
 window.selectLanguage = selectLanguage;
 window.startHostSession = startHostSession;
 window.joinSession = joinSession;

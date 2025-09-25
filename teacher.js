@@ -1,6 +1,7 @@
 // This file handles all logic for the Teacher Dashboard, now synced with Firestore.
 
 // --- IMPORTS ---
+import { getAvatarUri } from './ui.js';
 import * as state from './state.js';
 // Import only the necessary static data; students and test history will come from Firestore
 import { subjects, chapters, timetableData, daysOfWeek, attendanceRecords, assignments, chapterNotes , videoLessons} from './data.js';
@@ -156,9 +157,23 @@ async function renderProgressContent() {
     const subjectOverview = renderSubjectOverview();
     const studentList = await renderStudentList(); // Await the list from Firestore
 
-    return `
+    const offlineSyncCard = `
+        <div onclick="showScreen('sync')" class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm flex items-center space-x-4 cursor-pointer hover:shadow-md hover:-translate-y-1 transition-all mt-6">
+            <div class="bg-blue-100 dark:bg-blue-900/50 w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-wifi text-2xl text-blue-500"></i>
+            </div>
+            <div class="flex-1">
+                <h4 class="font-bold text-gray-800 dark:text-white">${t('offline_sync_title')}</h4>
+                <p class="text-sm text-gray-500 dark:text-gray-400">${t('offline_sync_subtitle')}</p>
+            </div>
+            <i class="fas fa-chevron-right text-gray-400"></i>
+        </div>
+    `;
+
+return `
         <div class="slide-up">
             ${subjectOverview}
+            ${offlineSyncCard}
             <h3 id="teacher-progress-title" class="text-xl font-bold text-gray-800 dark:text-white mb-4 border-t pt-4 mt-6 dark:border-gray-700">${t('student_progress')}</h3>
             <div id="teacher-student-list" class="space-y-3">${studentList}</div>
         </div>
@@ -191,7 +206,7 @@ async function renderStudentList() {
             const overallProgress = Math.floor(Math.random() * 101);
             return `
                 <div id="student-card-${index}" class="bg-white dark:bg-gray-800 p-3 rounded-xl shadow-sm flex items-center space-x-4">
-                    <img src="./assets/${student.avatar}.svg" class="w-12 h-12 rounded-full cursor-pointer" alt="${student.name}'s avatar" onclick="showStudentDetails('${student.id}')">
+                    <img src="${getAvatarUri(student.avatar)}" class="w-12 h-12 rounded-full cursor-pointer" alt="${student.name}'s avatar" onclick="showStudentDetails('${student.id}')">
                     <div class="flex-1 cursor-pointer" onclick="showStudentDetails('${student.id}')">
                         <div class="flex justify-between items-center mb-1">
                             <h4 class="font-bold text-gray-800 dark:text-white">${student.name}</h4>
@@ -224,7 +239,7 @@ export async function showStudentDetails(studentId) {
         return;
     }
 
-    document.getElementById('details-student-avatar').src = `./assets/${student.avatar}.svg`;
+    document.getElementById('details-student-avatar').src = getAvatarUri(student.avatar);
     document.getElementById('details-student-name').innerText = student.name;
     const subjectListContainer = document.getElementById('details-subject-list');
     
@@ -397,14 +412,36 @@ window.addEventListener('click', () => {
     }
 }, true);
 
+// In teacher.js
+
+// REPLACE the existing toggleAddStudentModal function with this one
 export function toggleAddStudentModal(show) {
     const modal = document.getElementById('add-student-modal');
     if (show) {
         modal.classList.remove('hidden');
+
+        // This is the crucial fix: It runs every time the modal opens.
+        // It finds all avatar images in the modal and sets their 'src'
+        // to the correct Data URI from our helper function.
+        document.querySelectorAll('#add-student-modal .new-avatar-option').forEach(img => {
+            const onclickAttr = img.getAttribute('onclick');
+            if (onclickAttr) {
+                // Extracts 'avatarX' from the onclick attribute string
+                const avatarId = onclickAttr.match(/'(avatar\d+)'/)[1];
+                if (avatarId) {
+                    img.src = getAvatarUri(avatarId);
+                }
+            }
+        });
+        
+        // Set a default selection when the modal opens
+        selectNewStudentAvatar('avatar1', document.querySelector('#add-student-modal .new-avatar-option'));
+
     } else {
         modal.classList.add('hidden');
         document.getElementById('new-student-name-input').value = '';
         newStudentAvatar = null;
+        // Reset visual selection when closing
         document.querySelectorAll('.new-avatar-option').forEach(el => {
             el.classList.remove('ring-4', 'ring-teal-500', 'opacity-100');
             el.classList.add('opacity-60');
@@ -413,13 +450,19 @@ export function toggleAddStudentModal(show) {
 }
 
 export function selectNewStudentAvatar(avatarId, element) {
-    newStudentAvatar = avatarId;
+    newStudentAvatar = avatarId; // Update the globally tracked selected avatar
+    
+    // Remove highlight from all avatars
     document.querySelectorAll('.new-avatar-option').forEach(el => {
         el.classList.remove('ring-4', 'ring-teal-500', 'opacity-100');
         el.classList.add('opacity-60');
     });
-    element.classList.add('ring-4', 'ring-teal-500', 'opacity-100');
-    element.classList.remove('opacity-60');
+    
+    // Add highlight to the selected avatar
+    if (element) {
+        element.classList.add('ring-4', 'ring-teal-500', 'opacity-100');
+        element.classList.remove('opacity-60');
+    }
 }
 
 function getTodayDateString() { return new Date().toISOString().split('T')[0]; }
@@ -445,7 +488,7 @@ function renderAttendanceSheet(dateString) {
         return `
             <div class="bg-white dark:bg-gray-800 p-3 rounded-xl shadow-sm flex items-center justify-between">
                 <div class="flex items-center space-x-3">
-                    <img src="./assets/${student.avatar}.svg" class="w-10 h-10 rounded-full" alt="${student.name}'s avatar">
+                    <img src="${getAvatarUri(student.avatar)}" class="w-10 h-10 rounded-full" alt="${student.name}'s avatar">
                     <h4 class="font-bold text-gray-800 dark:text-white">${student.name}</h4>
                 </div>
                 <div class="flex space-x-2">

@@ -164,7 +164,8 @@ const translations = {
     'content_details_for': { english: 'Content Details for', punjabi: 'ਲਈ ਸਮੱਗਰੀ ਵੇਰਵੇ', hindi: 'के लिए सामग्री विवरण' },
     'videos': { english: 'Videos', punjabi: 'ਵੀਡੀਓਜ਼', hindi: 'वीडियो' },
     'no_videos_uploaded': { english: 'No videos have been uploaded for this chapter yet.', punjabi: 'ਇਸ ਅਧਿਆਇ ਲਈ ਅਜੇ ਤੱਕ ਕੋਈ ਵੀਡੀਓ ਅੱਪਲੋਡ ਨਹੀਂ ਕੀਤਾ ਗਿਆ ਹੈ।', hindi: 'इस अध्याय के लिए अभी तक कोई वीडियो अपलोड नहीं किया गया है।' },
-
+    'offline_sync_title': { english: 'Offline Sync', punjabi: 'ਔਫਲਾਈਨ ਸਿੰਕ', hindi: 'ऑफलाइन सिंक' },
+    'offline_sync_subtitle': { english: 'Share content without internet', punjabi: 'ਬਿਨਾਂ ਇੰਟਰਨੈਟ ਦੇ ਸਮੱਗਰੀ ਸਾਂਝੀ ਕਰੋ', hindi: 'बिना इंटरनेट के सामग्री साझा करें' },
 };
 
 const subjects = [
