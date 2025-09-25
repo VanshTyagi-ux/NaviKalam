@@ -40,6 +40,12 @@ function setQRCode(dataString) {
  * UPDATED: Asks for camera permission and robustly selects a camera.
  * @param {function} onSuccess - Callback function to handle successful scan.
  */
+// --- Replacement for the startScanner function in offlineSync.js ---
+
+/**
+ * UPDATED: Asks for camera permission and robustly selects a camera.
+ * @param {function} onSuccess - Callback function to handle successful scan.
+ */
 function startScanner(onSuccess) {
     // The getCameras() method will trigger the permission prompt if needed.
     Html5Qrcode.getCameras().then(cameras => {
@@ -60,7 +66,7 @@ function startScanner(onSuccess) {
                 (errorMessage) => { /* ignore scan errors */ }
             ).catch((err) => {
                 console.error("QR Scanner Start Error:", err);
-                setStatus("Error: Could not start camera.");
+                setStatus(`Error: Unable to start scanner (${err}).`);
                 showScanner(false);
             });
         } else {
@@ -69,14 +75,24 @@ function startScanner(onSuccess) {
             setStatus("Error: No cameras found on this device.");
         }
     }).catch(err => {
-        // --- Error getting cameras, most likely a permission issue ---
+        // --- THIS IS THE UPDATED ERROR HANDLING SECTION ---
         console.error("Camera permission denied or error:", err);
-        setStatus("Camera permission is required for QR code scanning.");
+        
+        // Provide more specific feedback based on the error type
+        if (err.name === 'NotAllowedError') {
+            setStatus("Camera permission was denied. You must allow camera access in your browser settings.");
+        } else if (err.name === 'NotFoundError') {
+             setStatus("Error: No camera was found on this device.");
+        } else if (err.name === 'NotReadableError') {
+            setStatus("Error: The camera is already in use by another application.");
+        } else {
+            setStatus("Camera permission is required for QR code scanning.");
+        }
+
         showScanner(false);
         showInitialButtons(true); // Allow user to try again
     });
 }
-
 function stopScanner() {
     if (qrScanner && qrScanner.isScanning) {
         qrScanner.stop().then(() => {
