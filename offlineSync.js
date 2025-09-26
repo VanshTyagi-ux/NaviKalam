@@ -53,64 +53,57 @@ function setQRCode(dataString) {
  * @param {function} onSuccess - Callback function to handle successful scan.
  */
 function startScanner(onSuccess) {
-    // The getCameras() method will trigger the permission prompt if needed.
-    Html5Qrcode.getCameras().then(cameras => {
-        if (cameras && cameras.length) {
-            // --- Camera found, proceed to start scanner ---
-            // Pass a config to enable the faster, native BarcodeDetector if available.
-qrScanner = new Html5Qrcode("qr-scanner", {
-    useBarCodeDetectorIfSupported: true,
-    verbose: false // Set to true for more logs
-});
+    // 1. Detect if the user is on a mobile device.
+    const isMobile = /Mobi/i.test(navigator.userAgent);
 
-            const config = {
-    fps: 10,
-    qrbox: { width: 250, height: 250 },
-    // Add this to request a smaller video stream.
-    videoConstraints: {
-        width: { ideal: 640 },
-        height: { ideal: 480 }
-    }
-};
+    // 2. Define camera selection criteria.
+    // 'environment' = back camera, 'user' = front camera.
+    const cameraSelectionCriteria = {
+        facingMode: isMobile ? "environment" : "user"
+    };
 
-            showScanner(true);
+    // 3. Initialize the QR Code scanner.
+    qrScanner = new Html5Qrcode("qr-scanner", {
+        useBarCodeDetectorIfSupported: true,
+        verbose: false // Set to true for more logs
+    });
 
-            // Use the last camera in the list which is often the rear camera on mobile devices.
-            // This will still work on laptops as it will just be the only camera available.
-            const cameraId = cameras[cameras.length - 1].id;
-
-            qrScanner.start(
-                cameraId,
-                config,
-                onSuccess,
-                (errorMessage) => { /* ignore scan errors */ }
-            ).catch((err) => {
-                console.error("QR Scanner Start Error:", err);
-                setStatus(`Error: Unable to start scanner (${err}).`);
-                showScanner(false);
-            });
-        } else {
-            // --- No cameras found ---
-            console.error("No cameras found on this device.");
-            setStatus("Error: No cameras found on this device.");
+    // 4. Define the scanner configuration, including resolution.
+    const config = {
+        fps: 10,
+        qrbox: { width: 250, height: 250 },
+        videoConstraints: {
+            width: { ideal: 640 },
+            height: { ideal: 480 }
         }
-    }).catch(err => {
-        // --- THIS IS THE UPDATED ERROR HANDLING SECTION ---
-        console.error("Camera permission denied or error:", err);
+    };
+
+    showScanner(true);
+
+    // 5. Start the scanner with the camera selection criteria.
+    // The library's start() method uses these criteria to pick the camera.
+    qrScanner.start(
+        cameraSelectionCriteria,
+        config,
+        onSuccess,
+        (errorMessage) => { /* ignore scan errors */ }
+    ).catch((err) => {
+        console.error("QR Scanner Start Error:", err);
+        let statusMessage = "Error: Unable to start scanner.";
         
-        // Provide more specific feedback based on the error type
-        if (errconst.name === 'NotAllowedError') {
-            setStatus("Camera permission was denied. You must allow camera access in your browser settings.");
+        // Provide more specific feedback based on the error type.
+        if (err.name === 'NotAllowedError') {
+            statusMessage = "Camera permission was denied. You must allow camera access in your browser settings.";
         } else if (err.name === 'NotFoundError') {
-             setStatus("Error: No camera was found on this device.");
+             statusMessage = "Error: No suitable camera was found on this device.";
         } else if (err.name === 'NotReadableError') {
-            setStatus("Error: The camera is already in use by another application.");
+            statusMessage = "Error: The camera is already in use by another application.";
         } else {
-            setStatus("Camera permission is required for QR code scanning.");
+            statusMessage = `Camera permission is required. Error: ${err}`;
         }
 
+        setStatus(statusMessage);
         showScanner(false);
-        showInitialButtons(true); // Allow user to try again
     });
 }
 function stopScanner() {
